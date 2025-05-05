@@ -255,10 +255,11 @@ body {
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    width: 250px;
+    width: 300px;
     z-index: 9999; /* زيادة قيمة z-index لجعل القائمة تظهر فوق جميع العناصر */
     display: none;
-    overflow: hidden;
+    overflow-y: auto;
+    max-height: 80vh;
     margin-top: 5px; /* إضافة هامش علوي للقائمة */
 }
 
@@ -267,12 +268,32 @@ body {
     animation: fadeIn 0.2s ease;
 }
 
+/* أقسام القائمة */
+.menu-section {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 5px 0;
+}
+
+.menu-section:last-child {
+    border-bottom: none;
+}
+
+.menu-section-title {
+    padding: 8px 15px;
+    font-size: 12px;
+    color: var(--primary-light);
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: rgba(3, 131, 135, 0.1);
+}
+
 .menu-item {
     display: flex;
     align-items: center;
-    padding: 12px 15px;
+    padding: 10px 15px;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .menu-item:hover {
@@ -288,6 +309,16 @@ body {
 
 .menu-item span {
     flex: 1;
+}
+
+/* اختصارات لوحة المفاتيح */
+.shortcut {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 2px 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-right: 5px;
 }
 
 /* Toggle Switch */

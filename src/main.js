@@ -1,7 +1,6 @@
 const { app, BrowserWindow, session, ipcMain, Menu, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
-// const { autoUpdater } = require('electron-updater');
 // Mock autoUpdater for testing
 const autoUpdater = {
   autoDownload: false,
@@ -25,7 +24,7 @@ const autoUpdater = {
     setTimeout(() => {
       if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-not-available']) {
         autoUpdater.eventHandlers['update-not-available']({
-          version: '1.0.3',
+          version: '1.0.4',
           releaseDate: new Date().toISOString()
         });
       }
@@ -55,7 +54,7 @@ const autoUpdater = {
 
         if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-downloaded']) {
           autoUpdater.eventHandlers['update-downloaded']({
-            version: '1.0.4',
+            version: '1.0.5',
             releaseDate: new Date().toISOString(),
             releaseNotes: 'تحديث تجريبي للاختبار'
           });

@@ -77,29 +77,112 @@
                 <i class="fas fa-ellipsis-v"></i>
             </button>
             <div class="menu-dropdown" id="menu-dropdown">
-                <div class="menu-item" id="data-saver-toggle">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>وضع توفير البيانات</span>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="data-saver-checkbox">
-                        <label for="data-saver-checkbox"></label>
+                <!-- قائمة الملف -->
+                <div class="menu-section">
+                    <div class="menu-section-title">الملف</div>
+                    <div class="menu-item" id="new-tab-menu">
+                        <i class="fas fa-plus"></i>
+                        <span>تبويب جديد</span>
+                        <span class="shortcut">Ctrl+T</span>
+                    </div>
+                    <div class="menu-item" id="close-tab-menu">
+                        <i class="fas fa-times"></i>
+                        <span>إغلاق التبويب</span>
+                        <span class="shortcut">Ctrl+W</span>
+                    </div>
+                    <div class="menu-item" id="save-page-menu">
+                        <i class="fas fa-save"></i>
+                        <span>حفظ الصفحة</span>
+                        <span class="shortcut">Ctrl+S</span>
+                    </div>
+                    <div class="menu-item" id="print-page-menu">
+                        <i class="fas fa-print"></i>
+                        <span>طباعة</span>
+                        <span class="shortcut">Ctrl+P</span>
+                    </div>
+                    <div class="menu-item" id="exit-menu">
+                        <i class="fas fa-power-off"></i>
+                        <span>خروج</span>
+                        <span class="shortcut">Alt+F4</span>
                     </div>
                 </div>
-                <div class="menu-item" id="user-guide-link">
-                    <i class="fas fa-book"></i>
-                    <span>دليل المستخدم</span>
+
+                <!-- قائمة تحرير -->
+                <div class="menu-section">
+                    <div class="menu-section-title">تحرير</div>
+                    <div class="menu-item" id="find-in-page-menu">
+                        <i class="fas fa-search"></i>
+                        <span>بحث في الصفحة</span>
+                        <span class="shortcut">Ctrl+F</span>
+                    </div>
                 </div>
-                <div class="menu-item" id="faq-link">
-                    <i class="fas fa-question-circle"></i>
-                    <span>الأسئلة الشائعة</span>
+
+                <!-- قائمة عرض -->
+                <div class="menu-section">
+                    <div class="menu-section-title">عرض</div>
+                    <div class="menu-item" id="reader-mode-menu">
+                        <i class="fas fa-book-reader"></i>
+                        <span>وضع القراءة</span>
+                    </div>
+                    <div class="menu-item" id="dark-mode-menu">
+                        <i class="fas fa-moon"></i>
+                        <span>وضع الليل</span>
+                    </div>
+                    <div class="menu-item" id="fullscreen-menu">
+                        <i class="fas fa-expand"></i>
+                        <span>ملء الشاشة</span>
+                        <span class="shortcut">F11</span>
+                    </div>
                 </div>
-                <div class="menu-item" id="check-updates-link">
-                    <i class="fas fa-sync-alt"></i>
-                    <span>التحقق من التحديثات</span>
+
+                <!-- قائمة أدوات -->
+                <div class="menu-section">
+                    <div class="menu-section-title">أدوات</div>
+                    <div class="menu-item" id="data-saver-toggle">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>وضع توفير البيانات</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="data-saver-checkbox">
+                            <label for="data-saver-checkbox"></label>
+                        </div>
+                    </div>
+                    <div class="menu-item" id="clear-cache-menu">
+                        <i class="fas fa-eraser"></i>
+                        <span>مسح الكاش</span>
+                    </div>
+                    <div class="menu-item" id="clear-cookies-menu">
+                        <i class="fas fa-cookie-bite"></i>
+                        <span>مسح ملفات تعريف الارتباط</span>
+                    </div>
+                    <div class="menu-item" id="clear-all-data-menu">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>مسح كل البيانات</span>
+                    </div>
+                    <div class="menu-item" id="check-speed-menu">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>فحص سرعة الإنترنت</span>
+                    </div>
                 </div>
-                <div class="menu-item" id="about-link">
-                    <i class="fas fa-info-circle"></i>
-                    <span>حول البرنامج</span>
+
+                <!-- قائمة مساعدة -->
+                <div class="menu-section">
+                    <div class="menu-section-title">مساعدة</div>
+                    <div class="menu-item" id="user-guide-link">
+                        <i class="fas fa-book"></i>
+                        <span>دليل المستخدم</span>
+                    </div>
+                    <div class="menu-item" id="faq-link">
+                        <i class="fas fa-question-circle"></i>
+                        <span>الأسئلة الشائعة</span>
+                    </div>
+                    <div class="menu-item" id="check-updates-link">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>التحقق من التحديثات</span>
+                    </div>
+                    <div class="menu-item" id="about-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>حول البرنامج</span>
+                    </div>
                 </div>
             </div>
         </div>
