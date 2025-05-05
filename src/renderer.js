@@ -1392,12 +1392,35 @@ function updateDataSaverMenuState(enabled) {
 function setupMenu() {
     const menuButton = document.getElementById('menu-button');
     const menuDropdown = document.getElementById('menu-dropdown');
+
+    // القائمة المنسدلة - عناصر القائمة
     const dataSaverToggle = document.getElementById('data-saver-toggle');
     const dataSaverCheckbox = document.getElementById('data-saver-checkbox');
     const userGuideLink = document.getElementById('user-guide-link');
     const faqLink = document.getElementById('faq-link');
     const checkUpdatesLink = document.getElementById('check-updates-link');
     const aboutLink = document.getElementById('about-link');
+
+    // عناصر قائمة الملف
+    const newTabMenu = document.getElementById('new-tab-menu');
+    const closeTabMenu = document.getElementById('close-tab-menu');
+    const savePageMenu = document.getElementById('save-page-menu');
+    const printPageMenu = document.getElementById('print-page-menu');
+    const exitMenu = document.getElementById('exit-menu');
+
+    // عناصر قائمة تحرير
+    const findInPageMenu = document.getElementById('find-in-page-menu');
+
+    // عناصر قائمة عرض
+    const readerModeMenu = document.getElementById('reader-mode-menu');
+    const darkModeMenu = document.getElementById('dark-mode-menu');
+    const fullscreenMenu = document.getElementById('fullscreen-menu');
+
+    // عناصر قائمة أدوات
+    const clearCacheMenu = document.getElementById('clear-cache-menu');
+    const clearCookiesMenu = document.getElementById('clear-cookies-menu');
+    const clearAllDataMenu = document.getElementById('clear-all-data-menu');
+    const checkSpeedMenu = document.getElementById('check-speed-menu');
 
     // Toggle menu dropdown
     menuButton.addEventListener('click', () => {
@@ -1412,60 +1435,183 @@ function setupMenu() {
     });
 
     // Data saver toggle
-    dataSaverToggle.addEventListener('click', () => {
-        toggleDataSaverMode();
-        dataSaverCheckbox.checked = localStorage.getItem('data_saver_mode') === 'enabled';
-    });
+    if (dataSaverToggle) {
+        dataSaverToggle.addEventListener('click', () => {
+            toggleDataSaverMode();
+            dataSaverCheckbox.checked = localStorage.getItem('data_saver_mode') === 'enabled';
+        });
+    }
 
     // Page links
-    userGuideLink.addEventListener('click', () => {
-        openPage('user-guide.html');
-        menuDropdown.classList.remove('show');
-    });
+    if (userGuideLink) {
+        userGuideLink.addEventListener('click', () => {
+            openPage('user-guide.html');
+            menuDropdown.classList.remove('show');
+        });
+    }
 
-    faqLink.addEventListener('click', () => {
-        openPage('faq.html');
-        menuDropdown.classList.remove('show');
-    });
+    if (faqLink) {
+        faqLink.addEventListener('click', () => {
+            openPage('faq.html');
+            menuDropdown.classList.remove('show');
+        });
+    }
 
-    checkUpdatesLink.addEventListener('click', () => {
-        openPage('check-updates.html');
-        menuDropdown.classList.remove('show');
-    });
+    if (checkUpdatesLink) {
+        checkUpdatesLink.addEventListener('click', () => {
+            openPage('check-updates.html');
+            menuDropdown.classList.remove('show');
+        });
+    }
 
-    aboutLink.addEventListener('click', () => {
-        openPage('about.html');
-        menuDropdown.classList.remove('show');
-    });
+    if (aboutLink) {
+        aboutLink.addEventListener('click', () => {
+            openPage('about.html');
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    // قائمة الملف
+    if (newTabMenu) {
+        newTabMenu.addEventListener('click', () => {
+            createNewTab();
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (closeTabMenu) {
+        closeTabMenu.addEventListener('click', () => {
+            closeTab(activeTabId);
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (savePageMenu) {
+        savePageMenu.addEventListener('click', () => {
+            const activeWebview = getActiveWebview();
+            if (activeWebview) {
+                activeWebview.downloadURL(activeWebview.getURL());
+            }
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (printPageMenu) {
+        printPageMenu.addEventListener('click', () => {
+            const activeWebview = getActiveWebview();
+            if (activeWebview) {
+                activeWebview.print();
+            }
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (exitMenu) {
+        exitMenu.addEventListener('click', () => {
+            window.api.send('quit-app');
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    // قائمة تحرير
+    if (findInPageMenu) {
+        findInPageMenu.addEventListener('click', () => {
+            const activeWebview = getActiveWebview();
+            if (activeWebview) {
+                const searchTerm = prompt('أدخل كلمة البحث:');
+                if (searchTerm) {
+                    activeWebview.findInPage(searchTerm);
+                }
+            }
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    // قائمة عرض
+    if (readerModeMenu) {
+        readerModeMenu.addEventListener('click', () => {
+            const activeWebview = getActiveWebview();
+            if (activeWebview) {
+                activeWebview.executeJavaScript(`
+                    document.querySelectorAll('*').forEach(el => {
+                        if (el.tagName !== 'BODY' && el.tagName !== 'ARTICLE' && el.tagName !== 'P' &&
+                            el.tagName !== 'H1' && el.tagName !== 'H2' && el.tagName !== 'H3' &&
+                            el.tagName !== 'H4' && el.tagName !== 'H5' && el.tagName !== 'H6' &&
+                            el.tagName !== 'IMG' && el.tagName !== 'A') {
+                            el.style.display = 'none';
+                        }
+                    });
+                    document.body.style.maxWidth = '800px';
+                    document.body.style.margin = '0 auto';
+                    document.body.style.padding = '20px';
+                    document.body.style.fontSize = '18px';
+                    document.body.style.lineHeight = '1.6';
+                `);
+            }
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (darkModeMenu) {
+        darkModeMenu.addEventListener('click', () => {
+            const activeWebview = getActiveWebview();
+            if (activeWebview) {
+                activeWebview.executeJavaScript(`
+                    document.body.style.backgroundColor = '#1e1e1e';
+                    document.body.style.color = '#f0f0f0';
+                    document.querySelectorAll('a').forEach(a => {
+                        a.style.color = '#4da6ff';
+                    });
+                `);
+            }
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (fullscreenMenu) {
+        fullscreenMenu.addEventListener('click', () => {
+            window.api.send('toggle-fullscreen');
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    // قائمة أدوات
+    if (clearCacheMenu) {
+        clearCacheMenu.addEventListener('click', () => {
+            window.api.send('clear-cache');
+            showNotification('تم مسح الكاش بنجاح');
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (clearCookiesMenu) {
+        clearCookiesMenu.addEventListener('click', () => {
+            window.api.send('clear-cookies');
+            showNotification('تم مسح ملفات تعريف الارتباط بنجاح');
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (clearAllDataMenu) {
+        clearAllDataMenu.addEventListener('click', () => {
+            window.api.send('clear-all-data');
+            showNotification('تم مسح جميع بيانات التصفح بنجاح');
+            menuDropdown.classList.remove('show');
+        });
+    }
+
+    if (checkSpeedMenu) {
+        checkSpeedMenu.addEventListener('click', () => {
+            checkInternetSpeed();
+            menuDropdown.classList.remove('show');
+        });
+    }
 }
 
 // Open a page in a new window
 function openPage(page) {
-    const pageUrl = `pages/${page}`;
-    // إضافة أيقونة البرنامج للنافذة الجديدة
-    const pageWindow = window.open(pageUrl, '_blank', 'width=800,height=600,frame=true,nodeIntegration=true,icon=assets/logo/worksuite-logo.png');
-
-    pageWindow.addEventListener('load', () => {
-        pageWindow.focus();
-
-        // إضافة عنوان للنافذة الجديدة
-        switch(page) {
-            case 'user-guide.html':
-                pageWindow.document.title = 'دليل المستخدم - iBrowser';
-                break;
-            case 'faq.html':
-                pageWindow.document.title = 'الأسئلة الشائعة - iBrowser';
-                break;
-            case 'check-updates.html':
-                pageWindow.document.title = 'التحقق من التحديثات - iBrowser';
-                break;
-            case 'about.html':
-                pageWindow.document.title = 'حول البرنامج - iBrowser';
-                break;
-            default:
-                pageWindow.document.title = 'iBrowser';
-        }
-    });
+    // إرسال طلب فتح صفحة إلى العملية الرئيسية
+    window.api.send('open-page', { page });
 }
 
 // Initialize data saver mode

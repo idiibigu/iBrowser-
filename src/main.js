@@ -6,10 +6,69 @@ const fs = require('fs');
 const autoUpdater = {
   autoDownload: false,
   autoInstallOnAppQuit: true,
-  on: (event, callback) => {},
-  checkForUpdates: () => Promise.resolve(),
-  downloadUpdate: () => Promise.resolve(),
-  quitAndInstall: () => {}
+  on: (event, callback) => {
+    // تخزين معالجات الأحداث
+    if (!autoUpdater.eventHandlers) {
+      autoUpdater.eventHandlers = {};
+    }
+    autoUpdater.eventHandlers[event] = callback;
+  },
+  checkForUpdates: () => {
+    console.log('التحقق من التحديثات...');
+
+    // محاكاة التحقق من التحديثات
+    if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['checking-for-update']) {
+      autoUpdater.eventHandlers['checking-for-update']();
+    }
+
+    // بعد ثانيتين، إرسال إشعار بعدم وجود تحديثات
+    setTimeout(() => {
+      if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-not-available']) {
+        autoUpdater.eventHandlers['update-not-available']({
+          version: '1.0.3',
+          releaseDate: new Date().toISOString()
+        });
+      }
+    }, 2000);
+
+    return Promise.resolve();
+  },
+  downloadUpdate: () => {
+    console.log('تنزيل التحديث...');
+
+    // محاكاة تقدم التنزيل
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+
+      if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['download-progress']) {
+        autoUpdater.eventHandlers['download-progress']({
+          percent: progress,
+          bytesPerSecond: 1000000,
+          total: 10000000,
+          transferred: progress * 100000
+        });
+      }
+
+      if (progress >= 100) {
+        clearInterval(interval);
+
+        if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-downloaded']) {
+          autoUpdater.eventHandlers['update-downloaded']({
+            version: '1.0.4',
+            releaseDate: new Date().toISOString(),
+            releaseNotes: 'تحديث تجريبي للاختبار'
+          });
+        }
+      }
+    }, 500);
+
+    return Promise.resolve();
+  },
+  quitAndInstall: () => {
+    console.log('تثبيت التحديث وإعادة تشغيل التطبيق...');
+    app.quit();
+  }
 };
 
 // Keep a global reference of the window object to avoid garbage collection
@@ -93,354 +152,8 @@ function createWindow() {
 
 // Create application menu
 function createAppMenu() {
-  const template = [
-    {
-      label: 'الملف',
-      submenu: [
-        {
-          label: 'الرئيسية',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://pms.idiibi.com/');
-          }
-        },
-        { type: 'separator' },
-        {
-          label: 'تبويب جديد',
-          accelerator: 'CmdOrCtrl+T',
-          click: () => {
-            mainWindow.webContents.send('new-tab');
-          }
-        },
-        {
-          label: 'إغلاق التبويب',
-          accelerator: 'CmdOrCtrl+W',
-          click: () => {
-            mainWindow.webContents.send('close-tab');
-          }
-        },
-        {
-          label: 'حفظ الصفحة',
-          accelerator: 'CmdOrCtrl+S',
-          click: () => {
-            mainWindow.webContents.send('save-page');
-          }
-        },
-        {
-          label: 'طباعة',
-          accelerator: 'CmdOrCtrl+P',
-          click: () => {
-            mainWindow.webContents.send('print-page');
-          }
-        },
-        { type: 'separator' },
-        { role: 'quit', label: 'خروج' }
-      ]
-    },
-    {
-      label: 'تحرير',
-      submenu: [
-        { role: 'undo', label: 'تراجع' },
-        { role: 'redo', label: 'إعادة' },
-        { type: 'separator' },
-        { role: 'cut', label: 'قص' },
-        { role: 'copy', label: 'نسخ' },
-        { role: 'paste', label: 'لصق' },
-        { role: 'delete', label: 'حذف' },
-        { type: 'separator' },
-        { role: 'selectAll', label: 'تحديد الكل' },
-        { type: 'separator' },
-        {
-          label: 'بحث في الصفحة',
-          accelerator: 'CmdOrCtrl+F',
-          click: () => {
-            mainWindow.webContents.send('find-in-page');
-          }
-        }
-      ]
-    },
-    {
-      label: 'عرض',
-      submenu: [
-        { role: 'reload', label: 'تحديث' },
-        { role: 'forceReload', label: 'تحديث إجباري' },
-        { role: 'toggleDevTools', label: 'أدوات المطور' },
-        { type: 'separator' },
-        { role: 'resetZoom', label: 'حجم طبيعي' },
-        { role: 'zoomIn', label: 'تكبير' },
-        { role: 'zoomOut', label: 'تصغير' },
-        { type: 'separator' },
-        { role: 'togglefullscreen', label: 'ملء الشاشة' },
-        { type: 'separator' },
-        {
-          label: 'وضع القراءة',
-          click: () => {
-            mainWindow.webContents.send('reader-mode');
-          }
-        },
-        {
-          label: 'وضع الليل',
-          click: () => {
-            mainWindow.webContents.send('dark-mode');
-          }
-        }
-      ]
-    },
-    {
-      label: 'تنقل',
-      submenu: [
-        {
-          label: 'الرجوع',
-          accelerator: 'Alt+Left',
-          click: () => {
-            mainWindow.webContents.send('go-back');
-          }
-        },
-        {
-          label: 'التقدم',
-          accelerator: 'Alt+Right',
-          click: () => {
-            mainWindow.webContents.send('go-forward');
-          }
-        },
-        {
-          label: 'إعادة تحميل',
-          accelerator: 'F5',
-          click: () => {
-            mainWindow.webContents.send('reload-page');
-          }
-        },
-        {
-          label: 'إيقاف التحميل',
-          accelerator: 'Escape',
-          click: () => {
-            mainWindow.webContents.send('stop-loading');
-          }
-        },
-        { type: 'separator' },
-        {
-          label: 'الرئيسية',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://pms.idiibi.com/');
-          }
-        },
-        {
-          label: 'خدماتنا',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/services.html');
-          }
-        },
-        {
-          label: 'من نحن',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/about.html');
-          }
-        },
-        {
-          label: 'المشاريع',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/projects.html');
-          }
-        },
-        {
-          label: 'اتصل بنا',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/contact.html');
-          }
-        },
-        {
-          label: 'الدعم عن بعد',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/anydesk-support.html');
-          }
-        },
-        { type: 'separator' },
-        {
-          label: 'طرق الدفع',
-          click: () => {
-            mainWindow.webContents.send('show-payment');
-          }
-        }
-      ]
-    },
-    {
-      label: 'أدوات',
-      submenu: [
-        {
-          label: 'مسح بيانات التصفح',
-          submenu: [
-            {
-              label: 'مسح الكاش',
-              click: () => {
-                session.defaultSession.clearCache().then(() => {
-                  mainWindow.webContents.send('show-notification', 'تم مسح الكاش بنجاح');
-                });
-              }
-            },
-            {
-              label: 'مسح ملفات تعريف الارتباط',
-              click: () => {
-                session.defaultSession.clearStorageData({ storages: ['cookies'] }).then(() => {
-                  mainWindow.webContents.send('show-notification', 'تم مسح ملفات تعريف الارتباط بنجاح');
-                });
-              }
-            },
-            {
-              label: 'مسح بيانات المواقع',
-              click: () => {
-                session.defaultSession.clearStorageData({ storages: ['localstorage', 'sessionstorage'] }).then(() => {
-                  mainWindow.webContents.send('show-notification', 'تم مسح بيانات المواقع بنجاح');
-                });
-              }
-            },
-            {
-              label: 'مسح كل البيانات',
-              click: () => {
-                session.defaultSession.clearStorageData().then(() => {
-                  mainWindow.webContents.send('show-notification', 'تم مسح جميع بيانات التصفح بنجاح');
-                });
-              }
-            }
-          ]
-        },
-        {
-          label: 'إعدادات الكاش',
-          submenu: [
-            {
-              label: 'تفعيل الكاش',
-              type: 'checkbox',
-              checked: true,
-              click: (menuItem) => {
-                mainWindow.webContents.session.setCacheEnabled(menuItem.checked);
-                mainWindow.webContents.send('show-notification', menuItem.checked ? 'تم تفعيل الكاش' : 'تم تعطيل الكاش');
-              }
-            },
-            {
-              label: 'تحديد حجم الكاش',
-              submenu: [
-                {
-                  label: '100 ميجابايت',
-                  type: 'radio',
-                  checked: false,
-                  click: () => {
-                    app.commandLine.appendSwitch('disk-cache-size', (100 * 1024 * 1024).toString());
-                    mainWindow.webContents.send('show-notification', 'تم تحديد حجم الكاش: 100 ميجابايت');
-                  }
-                },
-                {
-                  label: '500 ميجابايت',
-                  type: 'radio',
-                  checked: true,
-                  click: () => {
-                    app.commandLine.appendSwitch('disk-cache-size', (500 * 1024 * 1024).toString());
-                    mainWindow.webContents.send('show-notification', 'تم تحديد حجم الكاش: 500 ميجابايت');
-                  }
-                },
-                {
-                  label: '1 جيجابايت',
-                  type: 'radio',
-                  checked: false,
-                  click: () => {
-                    app.commandLine.appendSwitch('disk-cache-size', (1024 * 1024 * 1024).toString());
-                    mainWindow.webContents.send('show-notification', 'تم تحديد حجم الكاش: 1 جيجابايت');
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        { type: 'separator' },
-        {
-          label: 'إعدادات الإنترنت',
-          submenu: [
-            {
-              label: 'وضع توفير البيانات',
-              type: 'checkbox',
-              checked: false,
-              click: (menuItem) => {
-                // تحديث حالة وضع توفير البيانات في localStorage
-                mainWindow.webContents.executeJavaScript(`
-                  localStorage.setItem('data_saver_mode', ${menuItem.checked ? "'enabled'" : "'disabled'"});
-                  // تطبيق وضع توفير البيانات على الويب فيو الحالي
-                  if (${menuItem.checked}) {
-                    const activeWebview = document.querySelector('.tab-pane.active webview');
-                    if (activeWebview) {
-                      window.toggleDataSaverMode();
-                    }
-                  } else {
-                    const activeWebview = document.querySelector('.tab-pane.active webview');
-                    if (activeWebview) {
-                      activeWebview.reload();
-                    }
-                  }
-                `);
-                mainWindow.webContents.send('show-notification', menuItem.checked ? 'تم تفعيل وضع توفير البيانات' : 'تم تعطيل وضع توفير البيانات');
-              }
-            },
-            {
-              label: 'تحميل الصور',
-              type: 'checkbox',
-              checked: true,
-              click: (menuItem) => {
-                mainWindow.webContents.session.setImagesEnabled(menuItem.checked);
-                mainWindow.webContents.send('show-notification', menuItem.checked ? 'تم تفعيل تحميل الصور' : 'تم تعطيل تحميل الصور');
-              }
-            },
-            {
-              label: 'تحميل JavaScript',
-              type: 'checkbox',
-              checked: true,
-              click: (menuItem) => {
-                mainWindow.webContents.session.setJavaScriptEnabled(menuItem.checked);
-                mainWindow.webContents.send('show-notification', menuItem.checked ? 'تم تفعيل JavaScript' : 'تم تعطيل JavaScript');
-              }
-            }
-          ]
-        },
-        { type: 'separator' },
-        {
-          label: 'فحص سرعة الإنترنت',
-          click: () => {
-            mainWindow.webContents.send('check-internet-speed');
-          }
-        }
-      ]
-    },
-    {
-      role: 'help',
-      label: 'مساعدة',
-      submenu: [
-        {
-          label: 'دليل المستخدم',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/help.html');
-          }
-        },
-        {
-          label: 'الأسئلة الشائعة',
-          click: () => {
-            mainWindow.webContents.send('navigate-menu', 'https://idiibi.com/faq.html');
-          }
-        },
-        { type: 'separator' },
-        {
-          label: 'التحقق من التحديثات',
-          click: () => {
-            // فتح صفحة التحقق من التحديثات
-            mainWindow.webContents.send('navigate-menu', 'pages/check-updates.html');
-          }
-        },
-        {
-          label: 'حول البرنامج',
-          click: () => {
-            mainWindow.webContents.send('show-about');
-          }
-        }
-      ]
-    }
-  ];
-
-  const menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
+  // إزالة القائمة العلوية واستخدام القائمة المنسدلة بجانب البحث بدلاً منها
+  Menu.setApplicationMenu(null);
 }
 
 // تكوين التحديثات التلقائية
@@ -527,6 +240,7 @@ app.whenReady().then(() => {
   createWindow();
   createAppMenu();
   setupAutoUpdater();
+  setupMenuIPCHandlers();
 
   // التحقق من التحديثات بعد 3 ثوانٍ من بدء التشغيل
   setTimeout(() => {
@@ -634,3 +348,92 @@ ipcMain.on('install-update', () => {
   console.log('طلب تثبيت التحديث من العملية الرئيسية');
   autoUpdater.quitAndInstall();
 });
+
+// معالجات IPC للقائمة الجديدة
+function setupMenuIPCHandlers() {
+  // إنهاء التطبيق
+  ipcMain.on('quit-app', () => {
+    app.quit();
+  });
+
+  // تبديل وضع ملء الشاشة
+  ipcMain.on('toggle-fullscreen', () => {
+    if (mainWindow) {
+      mainWindow.setFullScreen(!mainWindow.isFullScreen());
+    }
+  });
+
+  // مسح الكاش
+  ipcMain.on('clear-cache', () => {
+    if (mainWindow) {
+      session.defaultSession.clearCache().then(() => {
+        mainWindow.webContents.send('show-notification', 'تم مسح الكاش بنجاح');
+      });
+    }
+  });
+
+  // مسح ملفات تعريف الارتباط
+  ipcMain.on('clear-cookies', () => {
+    if (mainWindow) {
+      session.defaultSession.clearStorageData({ storages: ['cookies'] }).then(() => {
+        mainWindow.webContents.send('show-notification', 'تم مسح ملفات تعريف الارتباط بنجاح');
+      });
+    }
+  });
+
+  // مسح كل البيانات
+  ipcMain.on('clear-all-data', () => {
+    if (mainWindow) {
+      session.defaultSession.clearStorageData().then(() => {
+        mainWindow.webContents.send('show-notification', 'تم مسح جميع بيانات التصفح بنجاح');
+      });
+    }
+  });
+
+  // فتح صفحة في نافذة جديدة
+  ipcMain.on('open-page', (_, data) => {
+    const { page } = data;
+    const pageUrl = path.join(__dirname, 'pages', page);
+
+    // إنشاء نافذة جديدة للصفحة
+    let pageWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+      icon: path.join(__dirname, 'assets', 'logo', 'worksuite-logo.png'),
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        preload: path.join(__dirname, 'pages', 'preload.js')
+      }
+    });
+
+    // تحميل الصفحة
+    pageWindow.loadFile(pageUrl);
+
+    // إضافة عنوان للنافذة الجديدة
+    switch(page) {
+      case 'user-guide.html':
+        pageWindow.setTitle('دليل المستخدم - iBrowser');
+        break;
+      case 'faq.html':
+        pageWindow.setTitle('الأسئلة الشائعة - iBrowser');
+        break;
+      case 'check-updates.html':
+        pageWindow.setTitle('التحقق من التحديثات - iBrowser');
+        break;
+      case 'about.html':
+        pageWindow.setTitle('حول البرنامج - iBrowser');
+        break;
+      default:
+        pageWindow.setTitle('iBrowser');
+    }
+
+    // إزالة القائمة من النافذة
+    pageWindow.setMenu(null);
+
+    // تنظيف عند إغلاق النافذة
+    pageWindow.on('closed', () => {
+      pageWindow = null;
+    });
+  });
+}

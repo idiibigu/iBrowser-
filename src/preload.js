@@ -12,7 +12,13 @@ contextBridge.exposeInMainWorld(
         'check-for-updates',
         'download-update',
         'install-update',
-        'update-data-saver-menu'
+        'update-data-saver-menu',
+        'quit-app',
+        'toggle-fullscreen',
+        'clear-cache',
+        'clear-cookies',
+        'clear-all-data',
+        'open-page'
       ];
       if (validChannels.includes(channel)) {
         ipcRenderer.send(channel, data);
