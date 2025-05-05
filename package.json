@@ -1,0 +1,59 @@
+{
+  "name": "ibrowser",
+  "version": "1.0.1",
+  "description": "iBrowser - A desktop browser application by idiibi",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron src/main.js",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "publish": "electron-builder --publish always"
+  },
+  "keywords": [
+    "idiibi",
+    "pms",
+    "desktop",
+    "electron"
+  ],
+  "author": "idiibi",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^36.1.0",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "build": {
+    "appId": "com.idiibi.browser",
+    "productName": "iBrowser",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "src/assets/logo/worksuite-logo.png"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "idiibigu",
+        "repo": "iBrowser-"
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "iBrowser",
+      "artifactName": "iBrowser-Setup-${version}.${ext}"
+    },
+    "releaseInfo": {
+      "releaseNotesFile": "release-notes.md"
+    }
+  }
+}

@@ -1,0 +1,445 @@
+/* Main CSS for Idiibi PMS Desktop Application */
+
+:root {
+    /* Colors */
+    --primary-color: #038387;
+    --primary-light: #04a3a8;
+    --dark-bg: #0f172a;
+    --light-bg: #f8fafc;
+    --text-color: #ffffff;
+    --text-color-dark: #1e293b;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-color-dark: rgba(0, 0, 0, 0.1);
+
+    /* Fonts */
+    --font-primary: 'Almarai', 'Cairo', sans-serif;
+    --font-secondary: 'Tajawal', 'IBM Plex Sans Arabic', sans-serif;
+
+    /* Sizes */
+    --header-height: 70px;
+    --browser-controls-height: 50px;
+    --tabs-height: 40px;
+}
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: var(--font-primary);
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Status Bar */
+.status-bar {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    background-color: rgba(15, 23, 42, 0.95);
+    border-top: 1px solid var(--border-color);
+    padding: 0 10px;
+    font-size: 12px;
+    color: var(--text-color);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    padding: 0 5px;
+    height: 100%;
+    border-right: 1px solid var(--border-color);
+    padding-right: 15px;
+}
+
+.status-item:last-child {
+    border-right: none;
+}
+
+.status-item i {
+    margin-left: 5px;
+    color: var(--primary-light);
+}
+
+.progress-container {
+    flex: 1;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Browser Controls */
+.browser-controls {
+    display: flex;
+    align-items: center;
+    height: var(--browser-controls-height);
+    background-color: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 10px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.navigation-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.browser-controls button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.browser-controls button:hover {
+    background-color: rgba(3, 131, 135, 0.1);
+    color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.browser-controls button:active {
+    transform: translateY(0);
+}
+
+.browser-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Address Bar (Full Width) */
+.address-bar-container {
+    width: 100%;
+    padding: 8px 15px;
+    background-color: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    position: relative; /* إضافة position: relative لضمان عمل z-index بشكل صحيح */
+    z-index: 1000; /* إضافة z-index لضمان ظهور القائمة فوق الويب فيو */
+}
+
+.address-bar-wrapper {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: 20px;
+    padding: 0 15px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.address-bar-wrapper:focus-within {
+    background-color: rgba(30, 41, 59, 0.7);
+    border-color: rgba(3, 131, 135, 0.5);
+    box-shadow: 0 0 0 2px rgba(3, 131, 135, 0.2);
+}
+
+.address-icon {
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-left: 5px;
+}
+
+.url-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 14px;
+    padding: 0 10px;
+    height: 100%;
+    font-family: var(--font-primary);
+    direction: rtl;
+}
+
+.url-input:focus {
+    outline: none;
+}
+
+.go-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.go-button:hover {
+    background-color: rgba(3, 131, 135, 0.2);
+    color: var(--primary-light);
+}
+
+/* Menu Button Styles */
+.menu-button-container {
+    position: relative;
+    margin-right: 10px;
+    z-index: 9999; /* زيادة قيمة z-index لحاوية القائمة */
+}
+
+.menu-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-light);
+}
+
+.menu-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--dark-bg);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 250px;
+    z-index: 9999; /* زيادة قيمة z-index لجعل القائمة تظهر فوق جميع العناصر */
+    display: none;
+    overflow: hidden;
+    margin-top: 5px; /* إضافة هامش علوي للقائمة */
+}
+
+.menu-dropdown.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.menu-item i {
+    margin-left: 10px;
+    color: var(--primary-light);
+    width: 20px;
+    text-align: center;
+}
+
+.menu-item span {
+    flex: 1;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 20px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    transition: .4s;
+}
+
+.toggle-switch label:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    right: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+.toggle-switch input:checked + label {
+    background-color: var(--primary-light);
+}
+
+.toggle-switch input:checked + label:before {
+    transform: translateX(-20px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+        will-change: opacity, transform; /* تحسين الأداء */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        will-change: opacity, transform; /* تحسين الأداء */
+    }
+}
+
+/* Webview Container */
+.webview-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+webview {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: flex;
+}
+
+/* Utility Classes */
+.d-none {
+    display: none !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.d-lg-none {
+    display: none !important;
+}
+
+.d-lg-flex {
+    display: flex !important;
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+    .d-lg-none {
+        display: flex !important;
+    }
+
+    .d-lg-flex {
+        display: none !important;
+    }
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background-color: rgba(3, 131, 135, 0.9);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    text-align: center;
+    max-width: 80%;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+@media (max-width: 576px) {
+    .browser-controls button {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .address-bar {
+        height: 28px;
+        font-size: 12px;
+        padding: 0 10px;
+    }
+
+    .status-item {
+        margin-left: 8px;
+        padding-right: 8px;
+        font-size: 10px;
+    }
+
+    .notification {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+}
