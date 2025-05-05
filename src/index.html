@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iBrowser</title>
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/loading.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/tabs.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Animation Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-text">جاري التحميل...</div>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Browser Controls with Tabs -->
+    <div class="browser-controls">
+        <div class="navigation-buttons">
+            <button type="button" id="back-button" title="رجوع"><i class="fas fa-arrow-right"></i></button>
+            <button type="button" id="forward-button" title="تقدم"><i class="fas fa-arrow-left"></i></button>
+            <button type="button" id="refresh-button" title="تحديث"><i class="fas fa-sync-alt"></i></button>
+            <button type="button" id="home-button" title="الصفحة الرئيسية"><i class="fas fa-home"></i></button>
+            <button type="button" id="pms-button" title="PMS"><i class="fas fa-tasks"></i></button>
+            <button type="button" id="google-button" title="جوجل"><i class="fab fa-google"></i></button>
+            <button type="button" id="facebook-button" title="فيسبوك"><i class="fab fa-facebook-f"></i></button>
+            <button type="button" id="twitter-button" title="تويتر"><i class="fab fa-twitter"></i></button>
+            <button type="button" id="instagram-button" title="انستجرام"><i class="fab fa-instagram"></i></button>
+            <button type="button" id="youtube-button" title="يوتيوب"><i class="fab fa-youtube"></i></button>
+            <button type="button" id="bookmark-button" title="المفضلة"><i class="fas fa-bookmark"></i></button>
+            <button type="button" id="history-button" title="سجل التصفح"><i class="fas fa-history"></i></button>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs-list" id="tabs-list">
+                <div class="tab active" data-tab-id="tab-1">
+                    <span class="tab-title">الرئيسية</span>
+                    <button type="button" class="tab-close" title="إغلاق التبويب"><i class="fas fa-times"></i></button>
+                </div>
+                <button type="button" id="new-tab-button" class="new-tab-button" title="تبويب جديد">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Address Bar (Full Width) -->
+    <div class="address-bar-container">
+        <div class="address-bar-wrapper">
+            <div class="address-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <input type="text" id="url-input" class="url-input" placeholder="ابحث أو أدخل عنوان الموقع" spellcheck="false">
+            <button type="button" id="go-button" class="go-button" title="انتقال"><i class="fas fa-arrow-left"></i></button>
+        </div>
+        <div class="menu-button-container">
+            <button type="button" id="menu-button" class="menu-button" title="القائمة">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <div class="menu-dropdown" id="menu-dropdown">
+                <div class="menu-item" id="data-saver-toggle">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>وضع توفير البيانات</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="data-saver-checkbox">
+                        <label for="data-saver-checkbox"></label>
+                    </div>
+                </div>
+                <div class="menu-item" id="user-guide-link">
+                    <i class="fas fa-book"></i>
+                    <span>دليل المستخدم</span>
+                </div>
+                <div class="menu-item" id="faq-link">
+                    <i class="fas fa-question-circle"></i>
+                    <span>الأسئلة الشائعة</span>
+                </div>
+                <div class="menu-item" id="check-updates-link">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>التحقق من التحديثات</span>
+                </div>
+                <div class="menu-item" id="about-link">
+                    <i class="fas fa-info-circle"></i>
+                    <span>حول البرنامج</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content - Tabs and Webviews -->
+    <div class="tabs-content">
+        <div class="tab-pane active" id="tab-1">
+            <div class="webview-container">
+                <webview id="webview-1" src="https://www.google.com/" partition="persist:pmswebview" allowpopups preload="./webview-preload.js"></webview>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content animate__animated animate__fadeInDown">
+            <div class="modal-header">
+                <h2>طرق الدفع</h2>
+                <button type="button" class="modal-close" id="close-payment-modal" title="إغلاق"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-methods">
+                    <div class="payment-method">
+                        <h3>الدفع عبر Instapay</h3>
+                        <div class="payment-logo">
+                            <img src="assets/instapay/unnamed.webp" alt="Instapay Logo">
+                        </div>
+                        <div class="payment-qr">
+                            <img src="assets/instapay/WhatsApp Image 2024-09-15 at 7.23.09 PM.jpeg" alt="Instapay QR Code">
+                        </div>
+                        <p>امسح رمز QR أعلاه باستخدام تطبيق Instapay للدفع</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookmarks Modal -->
+    <div class="modal" id="bookmarks-modal">
+        <div class="modal-content animate__animated animate__fadeInDown">
+            <div class="modal-header">
+                <h2>المفضلة</h2>
+                <div class="modal-actions">
+                    <button type="button" id="add-bookmark-button" title="إضافة مفضلة جديدة"><i class="fas fa-plus"></i></button>
+                    <button type="button" id="import-bookmarks-button" title="استيراد المفضلة"><i class="fas fa-file-import"></i></button>
+                    <button type="button" id="export-bookmarks-button" title="تصدير المفضلة"><i class="fas fa-file-export"></i></button>
+                    <button type="button" class="modal-close" id="close-bookmarks-modal" title="إغلاق"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="bookmarks-search">
+                    <input type="text" id="bookmarks-search-input" placeholder="بحث في المفضلة..." class="search-input">
+                </div>
+                <div class="bookmarks-list" id="bookmarks-list">
+                    <!-- Bookmarks will be added here dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-bookmark empty-icon"></i>
+                        <p>لا توجد مفضلة محفوظة</p>
+                        <button type="button" class="add-button" id="add-first-bookmark">إضافة مفضلة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bookmark Modal -->
+    <div class="modal" id="add-bookmark-modal">
+        <div class="modal-content animate__animated animate__fadeInUp small-modal">
+            <div class="modal-header">
+                <h2>إضافة مفضلة جديدة</h2>
+                <button type="button" class="modal-close" id="close-add-bookmark-modal" title="إغلاق"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-bookmark-form">
+                    <div class="form-group">
+                        <label for="bookmark-name">الاسم</label>
+                        <input type="text" id="bookmark-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookmark-url">الرابط</label>
+                        <input type="url" id="bookmark-url" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookmark-folder">المجلد</label>
+                        <select id="bookmark-folder" class="form-input">
+                            <option value="">بدون مجلد</option>
+                            <option value="new">إنشاء مجلد جديد...</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancel-add-bookmark" class="button secondary">إلغاء</button>
+                        <button type="submit" class="button primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal" id="history-modal">
+        <div class="modal-content animate__animated animate__fadeInDown">
+            <div class="modal-header">
+                <h2>سجل التصفح</h2>
+                <div class="modal-actions">
+                    <button type="button" id="clear-history-button" title="مسح السجل"><i class="fas fa-trash"></i></button>
+                    <button type="button" id="export-history-button" title="تصدير السجل"><i class="fas fa-file-export"></i></button>
+                    <button type="button" class="modal-close" id="close-history-modal" title="إغلاق"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="history-search">
+                    <input type="text" id="history-search-input" placeholder="بحث في سجل التصفح..." class="search-input">
+                    <div class="history-filter">
+                        <select id="history-filter-select" class="filter-select">
+                            <option value="all">كل الوقت</option>
+                            <option value="today">اليوم</option>
+                            <option value="yesterday">أمس</option>
+                            <option value="week">هذا الأسبوع</option>
+                            <option value="month">هذا الشهر</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="history-list" id="history-list">
+                    <!-- History items will be added here dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-history empty-icon"></i>
+                        <p>لا يوجد سجل تصفح</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item" title="سرعة التحميل">
+            <i class="fas fa-download"></i>
+            <span id="download-speed">0 KB/s</span>
+        </div>
+        <div class="status-item" title="سرعة الرفع">
+            <i class="fas fa-upload"></i>
+            <span id="upload-speed">0 KB/s</span>
+        </div>
+        <div class="status-item" title="حالة الاتصال">
+            <i class="fas fa-wifi"></i>
+            <span id="connection-status">متصل</span>
+        </div>
+        <div class="status-item" title="التاريخ الميلادي">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="gregorian-date"></span>
+        </div>
+        <div class="status-item" title="التاريخ الهجري">
+            <i class="fas fa-moon"></i>
+            <span id="hijri-date"></span>
+        </div>
+        <div class="status-item" title="الوقت الحالي">
+            <i class="fas fa-clock"></i>
+            <span id="current-time"></span>
+        </div>
+        <div class="progress-container" title="تقدم تحميل الصفحة">
+            <div class="progress-bar" id="page-progress"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="renderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>
+</body>
+</html>
