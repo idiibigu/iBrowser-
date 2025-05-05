@@ -1,6 +1,6 @@
 {
   "name": "ibrowser",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "iBrowser - A desktop browser application by idiibi",
   "main": "src/main.js",
   "scripts": {
