@@ -35,7 +35,7 @@
 .tab {
     display: flex;
     align-items: center;
-    height: 32px;
+    height: 36px;
     background-color: rgba(30, 41, 59, 0.5);
     border-radius: 8px 8px 0 0;
     padding: 0 15px;
@@ -47,15 +47,76 @@
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-bottom: none;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    transform-origin: bottom center;
 }
 
 .tab:hover {
     background-color: rgba(3, 131, 135, 0.1);
+    transform: translateY(-2px);
 }
 
 .tab.active {
     background-color: rgba(3, 131, 135, 0.2);
     border-color: rgba(3, 131, 135, 0.3);
+    height: 38px;
+    transform: translateY(-3px);
+    box-shadow: 0 -3px 8px rgba(3, 131, 135, 0.2);
+}
+
+.tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+.tab:hover::after {
+    transform: scaleX(0.5);
+}
+
+.tab.active::after {
+    transform: scaleX(1);
+}
+
+/* Tab Activation/Deactivation Animations */
+.tab-activating {
+    animation: tabActivate 0.3s ease;
+}
+
+.tab-deactivating {
+    animation: tabDeactivate 0.3s ease;
+}
+
+@keyframes tabActivate {
+    0% {
+        transform: translateY(0) scale(0.95);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(-4px) scale(1.02);
+    }
+    100% {
+        transform: translateY(-3px) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes tabDeactivate {
+    0% {
+        transform: translateY(-3px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
 }
 
 .tab-title {
@@ -141,15 +202,122 @@
 .tab-pane.active {
     display: flex;
     flex: 1;
-    animation: fadeIn 0.3s ease;
+    animation: tabFadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
+@keyframes tabFadeIn {
     from {
         opacity: 0;
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تأثيرات انتقالية للتبويبات */
+.tab.animate__fadeInRight {
+    animation-duration: 0.5s;
+}
+
+.tab-pane.animate__fadeIn {
+    animation-duration: 0.5s;
+}
+
+/* Tab Favicon */
+.tab-favicon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+}
+
+.tab-favicon img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.tab-favicon i {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(15, 23, 42, 0.8);
+    z-index: 10;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.spinner > div {
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-light);
+    border-radius: 100%;
+    display: inline-block;
+    margin: 0 3px;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+    animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1.0);
+    }
+}
+
+.loading-text {
+    font-size: 14px;
+    color: var(--text-color);
+    margin-top: 10px;
+}
+
+/* Tab Count Animation */
+.count-update {
+    animation: countUpdate 0.5s ease;
+}
+
+@keyframes countUpdate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+        color: var(--primary-light);
+    }
+    100% {
+        transform: scale(1);
     }
 }
 
@@ -409,10 +577,12 @@
     border-radius: 8px;
     margin-bottom: 5px;
     transition: all 0.3s ease;
+    animation: fadeIn 0.3s ease;
 }
 
 .bookmark-item:hover {
     background-color: rgba(255, 255, 255, 0.05);
+    transform: translateX(-5px);
 }
 
 .bookmark-icon {
@@ -444,13 +614,18 @@
 
 .bookmark-actions {
     display: flex;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.bookmark-item:hover .bookmark-actions {
+    opacity: 1;
 }
 
 .bookmark-action {
     background: none;
     border: none;
     color: var(--text-color);
-    opacity: 0.6;
     font-size: 14px;
     cursor: pointer;
     width: 30px;
@@ -460,11 +635,94 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    margin-right: 2px;
 }
 
 .bookmark-action:hover {
-    opacity: 1;
     background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.bookmark-action.bookmark-open:hover {
+    color: #4caf50;
+}
+
+.bookmark-action.bookmark-edit:hover {
+    color: #2196f3;
+}
+
+.bookmark-action.bookmark-delete:hover {
+    color: #f44336;
+}
+
+/* Bookmark Folders */
+.bookmark-folder {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.bookmark-folder:hover {
+    background-color: rgba(30, 41, 59, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.folder-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(3, 131, 135, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.folder-header:hover {
+    background-color: rgba(3, 131, 135, 0.2);
+}
+
+.folder-header i {
+    color: var(--primary-light);
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.folder-name {
+    flex: 1;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.folder-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.folder-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.folder-content {
+    padding: 5px;
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.folder-content.collapsed {
+    max-height: 0;
+    padding: 0;
 }
 
 /* History List */

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/loading.css">
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/tabs.css">
+    <link rel="stylesheet" href="styles/ai-button.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Arabic Fonts -->
@@ -71,6 +72,60 @@
             </div>
             <input type="text" id="url-input" class="url-input" placeholder="ابحث أو أدخل عنوان الموقع" spellcheck="false">
             <button type="button" id="go-button" class="go-button" title="انتقال"><i class="fas fa-arrow-left"></i></button>
+        </div>
+        <div class="ai-button-container">
+            <button type="button" id="ai-button" class="ai-button" title="الذكاء الاصطناعي">
+                <span class="ai-label">AI</span>
+            </button>
+            <div class="ai-dropdown" id="ai-dropdown">
+                <div class="ai-dropdown-header">
+                    <h3>مواقع الذكاء الاصطناعي</h3>
+                </div>
+                <div class="ai-dropdown-content">
+                    <div class="ai-item" data-url="https://chat.openai.com/">
+                        <div class="ai-color-indicator" style="background-color: #10a37f;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">ChatGPT</span>
+                            <span class="ai-desc">روبوت محادثة ذكي من OpenAI</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://bard.google.com/">
+                        <div class="ai-color-indicator" style="background-color: #4285f4;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Google Gemini</span>
+                            <span class="ai-desc">مساعد ذكاء اصطناعي من Google</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://www.bing.com/chat">
+                        <div class="ai-color-indicator" style="background-color: #00897b;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Bing AI</span>
+                            <span class="ai-desc">محرك بحث ذكي من Microsoft</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://claude.ai/">
+                        <div class="ai-color-indicator" style="background-color: #9c27b0;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Claude</span>
+                            <span class="ai-desc">مساعد ذكاء اصطناعي من Anthropic</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://poe.com/">
+                        <div class="ai-color-indicator" style="background-color: #ff5722;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Poe</span>
+                            <span class="ai-desc">منصة تجمع عدة نماذج ذكاء اصطناعي</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://www.perplexity.ai/">
+                        <div class="ai-color-indicator" style="background-color: #3f51b5;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Perplexity</span>
+                            <span class="ai-desc">محرك بحث مدعوم بالذكاء الاصطناعي</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="menu-button-container">
             <button type="button" id="menu-button" class="menu-button" title="القائمة">

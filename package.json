@@ -1,6 +1,6 @@
 {
   "name": "ibrowser",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "iBrowser - A desktop browser application by idiibi",
   "main": "src/main.js",
   "scripts": {
@@ -33,12 +33,29 @@
     },
     "win": {
       "target": [
+        "nsis",
         "portable"
       ],
       "icon": "src/assets/logo/worksuite-logo.png"
     },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "iBrowser",
+      "artifactName": "iBrowser-Setup-${version}.${ext}",
+      "uninstallDisplayName": "iBrowser",
+      "deleteAppDataOnUninstall": true
+    },
     "portable": {
       "artifactName": "iBrowser-Portable-${version}.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "idiibigu",
+      "repo": "iBrowser-",
+      "releaseType": "release"
     }
   }
 }

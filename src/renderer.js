@@ -186,6 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set up menu
     setupMenu();
 
+    // Set up AI button
+    setupAIButton();
+
     // Initialize date and time
     updateDateTime();
     setInterval(updateDateTime, 1000);
@@ -427,11 +430,12 @@ function createNewTab(title = 'تبويب جديد', url = urls.home) {
     const tabId = `tab-${tabCounter}`;
     const webviewId = `webview-${tabCounter}`;
 
-    // Create tab element
+    // Create tab element with animation
     const tabElement = document.createElement('div');
     tabElement.className = 'tab';
     tabElement.dataset.tabId = tabId;
     tabElement.innerHTML = `
+        <div class="tab-favicon"><i class="fas fa-globe"></i></div>
         <span class="tab-title">${title}</span>
         <button type="button" class="tab-close" title="إغلاق التبويب"><i class="fas fa-times"></i></button>
     `;
@@ -439,12 +443,20 @@ function createNewTab(title = 'تبويب جديد', url = urls.home) {
     // Insert tab before the new tab button
     tabsList.insertBefore(tabElement, newTabButton);
 
-    // Create tab content
+    // Create tab content with loading indicator
     const tabContent = document.createElement('div');
     tabContent.className = 'tab-pane';
     tabContent.id = tabId;
     tabContent.innerHTML = `
         <div class="webview-container">
+            <div class="loading-indicator">
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+                <div class="loading-text">جاري التحميل...</div>
+            </div>
             <webview id="${webviewId}" src="${url}" partition="persist:pmswebview" allowpopups preload="./webview-preload.js"></webview>
         </div>
     `;
@@ -457,7 +469,8 @@ function createNewTab(title = 'تبويب جديد', url = urls.home) {
         id: tabId,
         title: title,
         url: url,
-        webviewId: webviewId
+        webviewId: webviewId,
+        createdAt: Date.now()
     });
 
     // Set up event listeners for the new tab
@@ -475,6 +488,44 @@ function createNewTab(title = 'تبويب جديد', url = urls.home) {
     const webview = document.getElementById(webviewId);
     setupWebviewEventListeners(webview);
 
+    // Add loading event listeners
+    webview.addEventListener('did-start-loading', () => {
+        // Show loading indicator
+        const loadingIndicator = tabContent.querySelector('.loading-indicator');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'flex';
+        }
+
+        // Update favicon
+        const favicon = tabElement.querySelector('.tab-favicon i');
+        if (favicon) {
+            favicon.className = 'fas fa-spinner fa-spin';
+        }
+    });
+
+    webview.addEventListener('did-stop-loading', () => {
+        // Hide loading indicator
+        const loadingIndicator = tabContent.querySelector('.loading-indicator');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+
+        // Update favicon with site icon if available
+        const favicon = tabElement.querySelector('.tab-favicon i');
+        if (favicon) {
+            // Try to get favicon from the site
+            const faviconUrl = `https://www.google.com/s2/favicons?domain=${webview.getURL()}`;
+            const img = new Image();
+            img.onload = () => {
+                tabElement.querySelector('.tab-favicon').innerHTML = `<img src="${faviconUrl}" alt="favicon">`;
+            };
+            img.onerror = () => {
+                favicon.className = 'fas fa-globe';
+            };
+            img.src = faviconUrl;
+        }
+    });
+
     // Activate the new tab
     activateTab(tabId);
 
@@ -482,7 +533,32 @@ function createNewTab(title = 'تبويب جديد', url = urls.home) {
     tabElement.classList.add('animate__animated', 'animate__fadeInRight');
     tabContent.classList.add('animate__animated', 'animate__fadeIn');
 
+    // Remove animation classes after animation completes
+    setTimeout(() => {
+        tabElement.classList.remove('animate__animated', 'animate__fadeInRight');
+        tabContent.classList.remove('animate__animated', 'animate__fadeIn');
+    }, 500);
+
+    // Update tab count
+    updateTabCount();
+
     return tabId;
+}
+
+// Update tab count
+function updateTabCount() {
+    const tabCount = tabs.length;
+    const tabCountElement = document.getElementById('tab-count');
+
+    if (tabCountElement) {
+        tabCountElement.textContent = tabCount;
+
+        // Add animation
+        tabCountElement.classList.add('count-update');
+        setTimeout(() => {
+            tabCountElement.classList.remove('count-update');
+        }, 500);
+    }
 }
 
 // Close a tab
@@ -524,17 +600,44 @@ function activateTab(tabId) {
     // Update active tab ID
     activeTabId = tabId;
 
-    // Update tab elements
+    // Update tab elements with animation
     document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
+        if (tab.classList.contains('active')) {
+            // Add exit animation to previously active tab
+            tab.classList.add('tab-deactivating');
+            setTimeout(() => {
+                tab.classList.remove('active', 'tab-deactivating');
+            }, 150);
+        }
     });
-    document.querySelector(`.tab[data-tab-id="${tabId}"]`).classList.add('active');
 
-    // Update tab content
+    const activeTab = document.querySelector(`.tab[data-tab-id="${tabId}"]`);
+    activeTab.classList.add('tab-activating');
+    setTimeout(() => {
+        activeTab.classList.add('active');
+        activeTab.classList.remove('tab-activating');
+    }, 150);
+
+    // Update tab content with animation
     document.querySelectorAll('.tab-pane').forEach(pane => {
-        pane.classList.remove('active');
+        if (pane.classList.contains('active')) {
+            // Add exit animation to previously active pane
+            pane.classList.add('animate__animated', 'animate__fadeOut');
+            setTimeout(() => {
+                pane.classList.remove('active', 'animate__animated', 'animate__fadeOut');
+            }, 200);
+        }
     });
-    document.getElementById(tabId).classList.add('active');
+
+    const activePane = document.getElementById(tabId);
+    activePane.classList.add('animate__animated', 'animate__fadeIn');
+    setTimeout(() => {
+        activePane.classList.add('active');
+    }, 100);
+
+    setTimeout(() => {
+        activePane.classList.remove('animate__animated', 'animate__fadeIn');
+    }, 500);
 
     // Update navigation state and URL
     updateNavigationState();
@@ -704,62 +807,162 @@ function hideHistoryModal() {
 function loadBookmarks() {
     const bookmarksList = document.getElementById('bookmarks-list');
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const searchInput = document.getElementById('bookmarks-search-input');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
 
     // Clear current list
     bookmarksList.innerHTML = '';
 
-    if (bookmarks.length === 0) {
-        // Show empty state
-        bookmarksList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-bookmark empty-icon"></i>
-                <p>لا توجد مفضلة محفوظة</p>
-                <button type="button" class="add-button" id="add-first-bookmark">إضافة مفضلة</button>
-            </div>
-        `;
+    // Filter bookmarks based on search term
+    const filteredBookmarks = searchTerm
+        ? bookmarks.filter(bookmark =>
+            bookmark.title.toLowerCase().includes(searchTerm) ||
+            bookmark.url.toLowerCase().includes(searchTerm))
+        : bookmarks;
 
-        // Add event listener to the add button
-        const addButton = document.getElementById('add-first-bookmark');
-        if (addButton) {
-            addButton.addEventListener('click', showAddBookmarkModal);
-        }
-    } else {
-        // Add bookmarks to the list
-        bookmarks.forEach(bookmark => {
-            const bookmarkItem = document.createElement('div');
-            bookmarkItem.className = 'bookmark-item';
-            bookmarkItem.innerHTML = `
-                <img src="https://www.google.com/s2/favicons?domain=${bookmark.url}" class="bookmark-icon" alt="">
-                <div class="bookmark-info">
-                    <div class="bookmark-title">${bookmark.title}</div>
-                    <div class="bookmark-url">${bookmark.url}</div>
-                </div>
-                <div class="bookmark-actions">
-                    <button type="button" class="bookmark-action bookmark-open" title="فتح"><i class="fas fa-external-link-alt"></i></button>
-                    <button type="button" class="bookmark-action bookmark-delete" title="حذف"><i class="fas fa-trash"></i></button>
+    if (filteredBookmarks.length === 0) {
+        // Show empty state
+        if (searchTerm && bookmarks.length > 0) {
+            // No results for search
+            bookmarksList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search empty-icon"></i>
+                    <p>لا توجد نتائج مطابقة لـ "${searchTerm}"</p>
+                    <button type="button" class="add-button" id="clear-search-button">مسح البحث</button>
                 </div>
             `;
 
-            // Add event listeners
-            const openButton = bookmarkItem.querySelector('.bookmark-open');
-            const deleteButton = bookmarkItem.querySelector('.bookmark-delete');
+            // Add event listener to the clear search button
+            const clearSearchButton = document.getElementById('clear-search-button');
+            if (clearSearchButton) {
+                clearSearchButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    loadBookmarks();
+                });
+            }
+        } else {
+            // No bookmarks at all
+            bookmarksList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-bookmark empty-icon"></i>
+                    <p>لا توجد مفضلة محفوظة</p>
+                    <button type="button" class="add-button" id="add-first-bookmark">إضافة مفضلة</button>
+                </div>
+            `;
 
-            openButton.addEventListener('click', () => {
-                navigateActiveTab(bookmark.url);
-                hideBookmarksModal();
+            // Add event listener to the add button
+            const addButton = document.getElementById('add-first-bookmark');
+            if (addButton) {
+                addButton.addEventListener('click', showAddBookmarkModal);
+            }
+        }
+    } else {
+        // Group bookmarks by folder
+        const bookmarksByFolder = {};
+        const noFolderBookmarks = [];
+
+        filteredBookmarks.forEach(bookmark => {
+            if (bookmark.folder) {
+                if (!bookmarksByFolder[bookmark.folder]) {
+                    bookmarksByFolder[bookmark.folder] = [];
+                }
+                bookmarksByFolder[bookmark.folder].push(bookmark);
+            } else {
+                noFolderBookmarks.push(bookmark);
+            }
+        });
+
+        // Add bookmarks without folder first
+        if (noFolderBookmarks.length > 0) {
+            noFolderBookmarks.forEach(bookmark => {
+                addBookmarkToList(bookmark, bookmarksList);
+            });
+        }
+
+        // Add bookmarks with folders
+        Object.keys(bookmarksByFolder).forEach(folder => {
+            // Create folder element
+            const folderElement = document.createElement('div');
+            folderElement.className = 'bookmark-folder';
+            folderElement.innerHTML = `
+                <div class="folder-header">
+                    <i class="fas fa-folder"></i>
+                    <span class="folder-name">${folder}</span>
+                    <button type="button" class="folder-toggle" title="توسيع/طي"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <div class="folder-content"></div>
+            `;
+
+            // Add event listener to toggle folder
+            const folderToggle = folderElement.querySelector('.folder-toggle');
+            const folderContent = folderElement.querySelector('.folder-content');
+
+            folderToggle.addEventListener('click', () => {
+                folderContent.classList.toggle('collapsed');
+                folderToggle.querySelector('i').classList.toggle('fa-chevron-down');
+                folderToggle.querySelector('i').classList.toggle('fa-chevron-right');
             });
 
-            deleteButton.addEventListener('click', () => {
-                deleteBookmark(bookmark.url);
-                loadBookmarks(); // Reload the list
+            // Add bookmarks to folder
+            bookmarksByFolder[folder].forEach(bookmark => {
+                addBookmarkToList(bookmark, folderContent);
             });
 
-            bookmarksList.appendChild(bookmarkItem);
+            bookmarksList.appendChild(folderElement);
         });
     }
 
     // Set up event listeners for bookmark modal buttons
     setupBookmarkModalButtons();
+
+    // Set up search functionality
+    if (searchInput && !searchInput.hasSearchListener) {
+        searchInput.addEventListener('input', () => {
+            loadBookmarks();
+        });
+        searchInput.hasSearchListener = true;
+    }
+}
+
+// Add a bookmark to the list
+function addBookmarkToList(bookmark, container) {
+    const bookmarkItem = document.createElement('div');
+    bookmarkItem.className = 'bookmark-item animate__animated animate__fadeIn';
+    bookmarkItem.innerHTML = `
+        <img src="https://www.google.com/s2/favicons?domain=${bookmark.url}" class="bookmark-icon" alt="">
+        <div class="bookmark-info">
+            <div class="bookmark-title">${bookmark.title}</div>
+            <div class="bookmark-url">${bookmark.url}</div>
+        </div>
+        <div class="bookmark-actions">
+            <button type="button" class="bookmark-action bookmark-open" title="فتح"><i class="fas fa-external-link-alt"></i></button>
+            <button type="button" class="bookmark-action bookmark-edit" title="تعديل"><i class="fas fa-edit"></i></button>
+            <button type="button" class="bookmark-action bookmark-delete" title="حذف"><i class="fas fa-trash"></i></button>
+        </div>
+    `;
+
+    // Add event listeners
+    const openButton = bookmarkItem.querySelector('.bookmark-open');
+    const editButton = bookmarkItem.querySelector('.bookmark-edit');
+    const deleteButton = bookmarkItem.querySelector('.bookmark-delete');
+
+    openButton.addEventListener('click', () => {
+        navigateActiveTab(bookmark.url);
+        hideBookmarksModal();
+    });
+
+    editButton.addEventListener('click', () => {
+        showEditBookmarkModal(bookmark);
+    });
+
+    deleteButton.addEventListener('click', () => {
+        if (confirm('هل أنت متأكد من حذف هذه المفضلة؟')) {
+            deleteBookmark(bookmark.url);
+            loadBookmarks(); // Reload the list
+        }
+    });
+
+    container.appendChild(bookmarkItem);
 }
 
 // Setup bookmark modal buttons
@@ -789,32 +992,193 @@ function setupBookmarkModalButtons() {
 // Show add bookmark modal
 function showAddBookmarkModal() {
     const addBookmarkModal = document.getElementById('add-bookmark-modal');
-    addBookmarkModal.classList.add('show');
+    const modalTitle = addBookmarkModal.querySelector('.modal-header h2');
+    const bookmarkNameInput = document.getElementById('bookmark-name');
+    const bookmarkUrlInput = document.getElementById('bookmark-url');
+    const bookmarkFolderSelect = document.getElementById('bookmark-folder');
+    const form = document.getElementById('add-bookmark-form');
+
+    // Reset form
+    form.reset();
+
+    // Change modal title
+    modalTitle.textContent = 'إضافة مفضلة جديدة';
+
+    // Clear original URL data attribute
+    delete form.dataset.originalUrl;
 
     // Get current URL and title
     const activeWebview = getActiveWebview();
     if (activeWebview) {
-        document.getElementById('bookmark-url').value = activeWebview.getURL();
-        document.getElementById('bookmark-name').value = getPageTitleFromUrl(activeWebview.getURL());
+        bookmarkUrlInput.value = activeWebview.getURL();
+        bookmarkNameInput.value = getPageTitleFromUrl(activeWebview.getURL());
     }
 
-    // Set up form submission
-    const addBookmarkForm = document.getElementById('add-bookmark-form');
-    const cancelAddBookmark = document.getElementById('cancel-add-bookmark');
-    const closeAddBookmarkModal = document.getElementById('close-add-bookmark-modal');
+    // Populate folder options
+    if (bookmarkFolderSelect) {
+        // Clear existing options except the default ones
+        while (bookmarkFolderSelect.options.length > 2) {
+            bookmarkFolderSelect.remove(2);
+        }
 
-    addBookmarkForm.addEventListener('submit', (e) => {
+        // Add folder options from existing bookmarks
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        const folders = [...new Set(bookmarks
+            .filter(b => b.folder)
+            .map(b => b.folder))];
+
+        folders.forEach(folder => {
+            const option = document.createElement('option');
+            option.value = folder;
+            option.textContent = folder;
+            bookmarkFolderSelect.appendChild(option);
+        });
+
+        // Select default option
+        bookmarkFolderSelect.selectedIndex = 0;
+    }
+
+    // Show the modal
+    addBookmarkModal.classList.add('show');
+
+    // Focus on the name input
+    bookmarkNameInput.focus();
+
+    // Set up form submission
+    setupBookmarkFormSubmission();
+}
+
+// Show edit bookmark modal
+function showEditBookmarkModal(bookmark) {
+    // Get the modal elements
+    const addBookmarkModal = document.getElementById('add-bookmark-modal');
+    const modalTitle = addBookmarkModal.querySelector('.modal-header h2');
+    const bookmarkNameInput = document.getElementById('bookmark-name');
+    const bookmarkUrlInput = document.getElementById('bookmark-url');
+    const bookmarkFolderSelect = document.getElementById('bookmark-folder');
+    const form = document.getElementById('add-bookmark-form');
+
+    // Change modal title
+    modalTitle.textContent = 'تعديل المفضلة';
+
+    // Set form values
+    bookmarkNameInput.value = bookmark.title;
+    bookmarkUrlInput.value = bookmark.url;
+
+    // Set folder value if exists
+    if (bookmarkFolderSelect) {
+        // Clear existing options except the default ones
+        while (bookmarkFolderSelect.options.length > 2) {
+            bookmarkFolderSelect.remove(2);
+        }
+
+        // Add folder options from existing bookmarks
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        const folders = [...new Set(bookmarks
+            .filter(b => b.folder)
+            .map(b => b.folder))];
+
+        folders.forEach(folder => {
+            const option = document.createElement('option');
+            option.value = folder;
+            option.textContent = folder;
+            bookmarkFolderSelect.appendChild(option);
+        });
+
+        // Select the current folder
+        if (bookmark.folder) {
+            // Check if folder exists in options
+            let folderExists = false;
+            for (let i = 0; i < bookmarkFolderSelect.options.length; i++) {
+                if (bookmarkFolderSelect.options[i].value === bookmark.folder) {
+                    bookmarkFolderSelect.selectedIndex = i;
+                    folderExists = true;
+                    break;
+                }
+            }
+
+            // If folder doesn't exist, add it
+            if (!folderExists) {
+                const option = document.createElement('option');
+                option.value = bookmark.folder;
+                option.textContent = bookmark.folder;
+                bookmarkFolderSelect.appendChild(option);
+                bookmarkFolderSelect.value = bookmark.folder;
+            }
+        } else {
+            bookmarkFolderSelect.selectedIndex = 0;
+        }
+    }
+
+    // Store the original URL to identify the bookmark when updating
+    form.dataset.originalUrl = bookmark.url;
+
+    // Show the modal
+    addBookmarkModal.classList.add('show');
+
+    // Focus on the name input
+    bookmarkNameInput.focus();
+
+    // Set up form submission
+    setupBookmarkFormSubmission();
+}
+
+// Set up bookmark form submission
+function setupBookmarkFormSubmission() {
+    const form = document.getElementById('add-bookmark-form');
+    const cancelButton = document.getElementById('cancel-add-bookmark');
+    const closeButton = document.getElementById('close-add-bookmark-modal');
+
+    // Remove existing event listeners
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    // Add new event listener
+    newForm.addEventListener('submit', (e) => {
         e.preventDefault();
+
         const title = document.getElementById('bookmark-name').value;
         const url = document.getElementById('bookmark-url').value;
+        const folderSelect = document.getElementById('bookmark-folder');
+        let folder = '';
 
-        addBookmark(title, url);
+        if (folderSelect) {
+            if (folderSelect.value === 'new') {
+                // Prompt for new folder name
+                const newFolder = prompt('أدخل اسم المجلد الجديد:');
+                if (newFolder) {
+                    folder = newFolder;
+                }
+            } else {
+                folder = folderSelect.value;
+            }
+        }
+
+        // Check if it's an edit or add operation
+        if (newForm.dataset.originalUrl) {
+            // Update existing bookmark
+            updateBookmark(newForm.dataset.originalUrl, title, url, folder);
+        } else {
+            // Add new bookmark
+            addBookmark(title, url, folder);
+        }
+
         hideAddBookmarkModal();
         loadBookmarks(); // Reload the list
     });
 
-    cancelAddBookmark.addEventListener('click', hideAddBookmarkModal);
-    closeAddBookmarkModal.addEventListener('click', hideAddBookmarkModal);
+    // Set up cancel and close buttons
+    if (cancelButton) {
+        const newCancelButton = cancelButton.cloneNode(true);
+        cancelButton.parentNode.replaceChild(newCancelButton, cancelButton);
+        newCancelButton.addEventListener('click', hideAddBookmarkModal);
+    }
+
+    if (closeButton) {
+        const newCloseButton = closeButton.cloneNode(true);
+        closeButton.parentNode.replaceChild(newCloseButton, closeButton);
+        newCloseButton.addEventListener('click', hideAddBookmarkModal);
+    }
 }
 
 // Hide add bookmark modal
@@ -824,18 +1188,61 @@ function hideAddBookmarkModal() {
 }
 
 // Add bookmark
-function addBookmark(title, url) {
+function addBookmark(title, url, folder = '') {
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
 
     // Check if bookmark already exists
     const exists = bookmarks.some(bookmark => bookmark.url === url);
     if (!exists) {
-        bookmarks.push({ title, url });
+        bookmarks.push({
+            title,
+            url,
+            folder,
+            dateAdded: new Date().toISOString()
+        });
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
         showNotification('تمت إضافة المفضلة بنجاح');
+        return true;
     } else {
         showNotification('هذه المفضلة موجودة بالفعل');
+        return false;
     }
+}
+
+// Update a bookmark
+function updateBookmark(oldUrl, newTitle, newUrl, newFolder = '') {
+    // Get existing bookmarks
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+
+    // Find the bookmark to update
+    const bookmarkIndex = bookmarks.findIndex(bookmark => bookmark.url === oldUrl);
+    if (bookmarkIndex === -1) {
+        showNotification('المفضلة غير موجودة');
+        return false;
+    }
+
+    // Check if new URL already exists (except for the current bookmark)
+    const exists = bookmarks.some((bookmark, index) =>
+        index !== bookmarkIndex && bookmark.url === newUrl);
+    if (exists) {
+        showNotification('هذا الرابط موجود بالفعل في مفضلة أخرى');
+        return false;
+    }
+
+    // Update bookmark
+    bookmarks[bookmarkIndex] = {
+        ...bookmarks[bookmarkIndex],
+        title: newTitle,
+        url: newUrl,
+        folder: newFolder,
+        dateModified: new Date().toISOString()
+    };
+
+    // Save to localStorage
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+    showNotification('تم تحديث المفضلة بنجاح');
+    return true;
 }
 
 // Delete bookmark
@@ -844,6 +1251,7 @@ function deleteBookmark(url) {
     const newBookmarks = bookmarks.filter(bookmark => bookmark.url !== url);
     localStorage.setItem('bookmarks', JSON.stringify(newBookmarks));
     showNotification('تم حذف المفضلة بنجاح');
+    return true;
 }
 
 // Import bookmarks
@@ -1118,44 +1526,134 @@ function updateDateTime() {
     const now = new Date();
 
     // Format Gregorian date
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const formattedDate = `${year}/${month}/${day}`;
+    const gregorianOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        calendar: 'gregory'
+    };
+    const formattedDate = new Intl.DateTimeFormat('ar-SA', gregorianOptions).format(now);
 
     // Format time
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    const timeOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    };
+    const formattedTime = new Intl.DateTimeFormat('ar-SA', timeOptions).format(now);
 
     // Update Gregorian date
     gregorianDate.textContent = formattedDate;
 
-    // Update Hijri date using a simple calculation (approximate)
-    // This is a simple approximation - for accurate conversion, a proper library should be used
-    const islamicYear = Math.floor(year - 622 + (year - 622) / 32);
-    const islamicMonth = getIslamicMonth(month, day, year);
-    const islamicDay = getIslamicDay(day, month, year);
-    hijriDate.textContent = `${islamicYear}/${islamicMonth}/${islamicDay}`;
+    // Update Hijri date using moment-hijri library
+    if (window.moment && window.moment.hijri) {
+        const hijriDate_moment = window.moment(now).hijri();
+        const hijriYear = hijriDate_moment.format('iYYYY');
+        const hijriMonth = hijriDate_moment.format('iMM');
+        const hijriMonthName = getHijriMonthName(parseInt(hijriMonth));
+        const hijriDay = hijriDate_moment.format('iDD');
+
+        // Show date with tooltip containing month name
+        hijriDate.textContent = `${hijriYear}/${hijriMonth}/${hijriDay}`;
+        hijriDate.title = `${hijriDay} ${hijriMonthName} ${hijriYear}هـ`;
+
+        // Add data attributes for potential UI enhancements
+        hijriDate.dataset.year = hijriYear;
+        hijriDate.dataset.month = hijriMonth;
+        hijriDate.dataset.monthName = hijriMonthName;
+        hijriDate.dataset.day = hijriDay;
+    } else {
+        // Fallback to our approximation if the library is not available
+        const islamicYear = Math.floor(now.getFullYear() - 622 + (now.getFullYear() - 622) / 32);
+        const islamicMonth = getIslamicMonth(now.getMonth() + 1, now.getDate(), now.getFullYear());
+        const islamicMonthName = getHijriMonthName(parseInt(islamicMonth));
+        const islamicDay = getIslamicDay(now.getDate(), now.getMonth() + 1, now.getFullYear());
+
+        hijriDate.textContent = `${islamicYear}/${islamicMonth}/${islamicDay}`;
+        hijriDate.title = `${islamicDay} ${islamicMonthName} ${islamicYear}هـ`;
+    }
 
     // Update current time
     currentTime.textContent = formattedTime;
+
+    // Add animation effect to time
+    currentTime.classList.add('time-update');
+    setTimeout(() => {
+        currentTime.classList.remove('time-update');
+    }, 500);
 }
 
 // Simple function to approximate Islamic month
-function getIslamicMonth(month, _day, year) {
-    // This is a very simple approximation
-    const offset = Math.floor((year - 622) * 11 / 30);
-    const approxMonth = ((parseInt(month) + offset) % 12) || 12;
-    return String(approxMonth).padStart(2, '0');
+function getIslamicMonth(month, day, year) {
+    // This is a more accurate approximation
+    const jd = gregorianToJulian(year, month, day);
+    const islamicDate = julianToIslamic(jd);
+    return String(islamicDate.month).padStart(2, '0');
 }
 
 // Simple function to approximate Islamic day
-function getIslamicDay(day, _month, _year) {
-    // This is a very simple approximation
-    const dayNum = parseInt(day);
-    return String(((dayNum + 15) % 30) || 30).padStart(2, '0');
+function getIslamicDay(day, month, year) {
+    // This is a more accurate approximation
+    const jd = gregorianToJulian(year, month, day);
+    const islamicDate = julianToIslamic(jd);
+    return String(islamicDate.day).padStart(2, '0');
+}
+
+// Convert Gregorian date to Julian day
+function gregorianToJulian(year, month, day) {
+    if (month <= 2) {
+        year -= 1;
+        month += 12;
+    }
+
+    const a = Math.floor(year / 100);
+    const b = Math.floor(a / 4);
+    const c = 2 - a + b;
+    const e = Math.floor(365.25 * (year + 4716));
+    const f = Math.floor(30.6001 * (month + 1));
+
+    return c + day + e + f - 1524.5;
+}
+
+// Convert Julian day to Islamic date
+function julianToIslamic(jd) {
+    const l = Math.floor(jd) + 0.5;
+    const n = Math.floor((l - 1948440 + 10632) / 10631);
+    const j = l - 1948440 + 10631 * n + 354;
+    const k = Math.floor((j - 0.5) / 10631);
+
+    const o = j - 10631 * k + 354;
+    const p = Math.floor((10985 - o) / 5316) * Math.floor((50 * o) / 17719) + Math.floor(o / 5670) * Math.floor((43 * o) / 15238);
+    const q = o - Math.floor((30 - p) / 15) * Math.floor((17719 * p) / 50) - Math.floor(p / 16) * Math.floor((15238 * p) / 43) + 29;
+
+    const m = Math.floor((24 * q) / 709);
+    const d = q - Math.floor((709 * m) / 24);
+    const y = 30 * n + k - 30;
+
+    return { year: y, month: m + 1, day: d };
+}
+
+// Get Hijri month name
+function getHijriMonthName(month) {
+    const hijriMonths = [
+        'محرم',
+        'صفر',
+        'ربيع الأول',
+        'ربيع الثاني',
+        'جمادى الأولى',
+        'جمادى الآخرة',
+        'رجب',
+        'شعبان',
+        'رمضان',
+        'شوال',
+        'ذو القعدة',
+        'ذو الحجة'
+    ];
+
+    // Ensure month is between 1-12
+    const monthIndex = ((month - 1) % 12 + 12) % 12;
+    return hijriMonths[monthIndex];
 }
 
 // Update network information
@@ -1164,24 +1662,72 @@ async function updateNetworkInfo() {
         const downloadSpeed = document.getElementById('download-speed');
         const uploadSpeed = document.getElementById('upload-speed');
         const connectionStatus = document.getElementById('connection-status');
+        const downloadIcon = document.querySelector('.status-item i.fa-download');
+        const uploadIcon = document.querySelector('.status-item i.fa-upload');
+        const wifiIcon = document.querySelector('.status-item i.fa-wifi');
 
         // Get network info from main process
         const networkInfo = await window.api.invoke('get-network-info');
 
-        // Update UI
+        // Update UI with animation
         if (networkInfo.isOnline) {
+            // Add animation class
+            downloadSpeed.classList.add('value-update');
+            uploadSpeed.classList.add('value-update');
+
+            // Update values
             downloadSpeed.textContent = `${networkInfo.downloadSpeed} Mbps`;
             uploadSpeed.textContent = `${networkInfo.uploadSpeed} Mbps`;
             connectionStatus.textContent = 'متصل';
             connectionStatus.style.color = '#4caf50';
+
+            // Update icons based on speed
+            if (networkInfo.downloadSpeed > 10) {
+                downloadIcon.style.color = '#4caf50'; // Fast
+            } else if (networkInfo.downloadSpeed > 5) {
+                downloadIcon.style.color = '#ff9800'; // Medium
+            } else {
+                downloadIcon.style.color = '#f44336'; // Slow
+            }
+
+            if (networkInfo.uploadSpeed > 5) {
+                uploadIcon.style.color = '#4caf50'; // Fast
+            } else if (networkInfo.uploadSpeed > 2) {
+                uploadIcon.style.color = '#ff9800'; // Medium
+            } else {
+                uploadIcon.style.color = '#f44336'; // Slow
+            }
+
+            // Update WiFi icon
+            wifiIcon.className = 'fas fa-wifi';
+            wifiIcon.style.color = '#4caf50';
         } else {
             downloadSpeed.textContent = '0 Mbps';
             uploadSpeed.textContent = '0 Mbps';
             connectionStatus.textContent = 'غير متصل';
             connectionStatus.style.color = '#f44336';
+
+            // Update icons
+            downloadIcon.style.color = '#f44336';
+            uploadIcon.style.color = '#f44336';
+
+            // Change WiFi icon to disconnected
+            wifiIcon.className = 'fas fa-wifi-slash';
+            wifiIcon.style.color = '#f44336';
         }
+
+        // Remove animation class after animation completes
+        setTimeout(() => {
+            downloadSpeed.classList.remove('value-update');
+            uploadSpeed.classList.remove('value-update');
+        }, 500);
     } catch (error) {
         console.error('Error updating network info:', error);
+
+        // Show error in status bar
+        const connectionStatus = document.getElementById('connection-status');
+        connectionStatus.textContent = 'خطأ في الاتصال';
+        connectionStatus.style.color = '#f44336';
     }
 }
 
@@ -1658,4 +2204,134 @@ function initDataSaverMode() {
 
     // إضافة وظيفة toggleDataSaverMode إلى النافذة لاستخدامها من العملية الرئيسية
     window.toggleDataSaverMode = toggleDataSaverMode;
+}
+
+// Set up AI button and dropdown
+function setupAIButton() {
+    const aiButton = document.getElementById('ai-button');
+    const aiDropdown = document.getElementById('ai-dropdown');
+    const aiItems = document.querySelectorAll('.ai-item');
+
+    // تحديد موقع القائمة المنسدلة بناءً على أبعاد الشاشة
+    function positionDropdown() {
+        // إعادة تعيين التحويلات لحساب الموقع بشكل صحيح
+        if (window.innerWidth <= 576) {
+            // للشاشات الصغيرة، نضع القائمة في المنتصف
+            aiDropdown.style.right = '50%';
+            aiDropdown.style.transform = aiDropdown.classList.contains('show')
+                ? 'translateY(0) translateX(50%)'
+                : 'translateY(10px) translateX(50%)';
+        } else {
+            // للشاشات الكبيرة، نضع القائمة بجوار الزر
+            aiDropdown.style.right = '10px';
+            aiDropdown.style.transform = aiDropdown.classList.contains('show')
+                ? 'translateY(0)'
+                : 'translateY(10px)';
+        }
+
+        // تحديد الارتفاع الأقصى بناءً على ارتفاع الشاشة
+        const maxHeight = Math.min(window.innerHeight * 0.6, 500);
+        const content = aiDropdown.querySelector('.ai-dropdown-content');
+        if (content) {
+            content.style.maxHeight = `${maxHeight}px`;
+        }
+    }
+
+    // تحديد موقع القائمة عند تحميل الصفحة
+    positionDropdown();
+
+    // تحديث موقع القائمة عند تغيير حجم الشاشة
+    window.addEventListener('resize', positionDropdown);
+
+    // Toggle AI dropdown when AI button is clicked
+    aiButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        // إغلاق القائمة إذا كانت مفتوحة
+        if (aiDropdown.classList.contains('show')) {
+            aiDropdown.classList.remove('show');
+            return;
+        }
+
+        // فتح القائمة وتحديد موقعها
+        positionDropdown();
+        aiDropdown.classList.add('show');
+
+        // Add animation class
+        aiDropdown.classList.add('animate__animated', 'animate__fadeIn');
+
+        // تمرير القائمة إلى الأعلى
+        const content = aiDropdown.querySelector('.ai-dropdown-content');
+        if (content) {
+            content.scrollTop = 0;
+        }
+    });
+
+    // Close AI dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!aiButton.contains(e.target) && !aiDropdown.contains(e.target)) {
+            aiDropdown.classList.remove('show');
+        }
+    });
+
+    // إغلاق القائمة عند الضغط على ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && aiDropdown.classList.contains('show')) {
+            aiDropdown.classList.remove('show');
+        }
+    });
+
+    // Handle AI item clicks
+    aiItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const url = item.getAttribute('data-url');
+            if (url) {
+                // إظهار تأثير النقر
+                item.classList.add('animate__animated', 'animate__fadeOut');
+
+                // انتظار انتهاء التأثير ثم فتح التبويب الجديد
+                setTimeout(() => {
+                    // Navigate to the AI website in a new tab
+                    createNewTab(item.querySelector('.ai-name').textContent, url);
+
+                    // Close the dropdown
+                    aiDropdown.classList.remove('show');
+
+                    // إزالة تأثير النقر بعد إغلاق القائمة
+                    setTimeout(() => {
+                        item.classList.remove('animate__animated', 'animate__fadeOut');
+                    }, 300);
+                }, 300);
+            }
+        });
+
+        // Add hover animation for color indicators
+        item.addEventListener('mouseenter', () => {
+            const colorIndicator = item.querySelector('.ai-color-indicator');
+            if (colorIndicator) {
+                colorIndicator.classList.add('animate__animated', 'animate__fadeIn');
+            }
+        });
+
+        item.addEventListener('mouseleave', () => {
+            const colorIndicator = item.querySelector('.ai-color-indicator');
+            if (colorIndicator) {
+                colorIndicator.classList.remove('animate__animated', 'animate__fadeIn');
+            }
+        });
+    });
+
+    // Function to get a color based on AI name
+    function getColorForAI(name) {
+        const colors = {
+            'ChatGPT': '#10a37f',
+            'Google Gemini': '#4285f4',
+            'Bing AI': '#00897b',
+            'Claude': '#9c27b0',
+            'Poe': '#ff5722',
+            'Perplexity': '#3f51b5'
+        };
+
+        return colors[name] || '#7928CA';
+    }
 }

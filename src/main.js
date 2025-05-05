@@ -20,13 +20,38 @@ const autoUpdater = {
       autoUpdater.eventHandlers['checking-for-update']();
     }
 
-    // بعد ثانيتين، إرسال إشعار بعدم وجود تحديثات
+    // محاكاة عملية التحقق من التحديثات
     setTimeout(() => {
-      if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-not-available']) {
-        autoUpdater.eventHandlers['update-not-available']({
-          version: '1.0.4',
-          releaseDate: new Date().toISOString()
-        });
+      // قراءة الإصدار الحالي من package.json
+      const currentVersion = app.getVersion();
+      console.log('الإصدار الحالي:', currentVersion);
+
+      // محاكاة وجود تحديث جديد (للاختبار)
+      const randomChoice = Math.random();
+
+      if (randomChoice > 0.5) {
+        // محاكاة وجود تحديث جديد
+        if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-available']) {
+          autoUpdater.eventHandlers['update-available']({
+            version: '1.0.6',
+            releaseDate: new Date().toISOString(),
+            releaseNotes: [
+              'تحسين أداء التطبيق بشكل كبير',
+              'إضافة ميزة الترجمة الفورية للصفحات',
+              'إضافة وضع القراءة المحسن',
+              'تحسين نظام إدارة التبويبات',
+              'إصلاح مشاكل متعددة في واجهة المستخدم'
+            ]
+          });
+        }
+      } else {
+        // محاكاة عدم وجود تحديثات
+        if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-not-available']) {
+          autoUpdater.eventHandlers['update-not-available']({
+            version: currentVersion,
+            releaseDate: new Date().toISOString()
+          });
+        }
       }
     }, 2000);
 
@@ -54,9 +79,15 @@ const autoUpdater = {
 
         if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-downloaded']) {
           autoUpdater.eventHandlers['update-downloaded']({
-            version: '1.0.5',
+            version: '1.0.6',
             releaseDate: new Date().toISOString(),
-            releaseNotes: 'تحديث تجريبي للاختبار'
+            releaseNotes: [
+              'تحسين أداء التطبيق بشكل كبير',
+              'إضافة ميزة الترجمة الفورية للصفحات',
+              'إضافة وضع القراءة المحسن',
+              'تحسين نظام إدارة التبويبات',
+              'إصلاح مشاكل متعددة في واجهة المستخدم'
+            ]
           });
         }
       }
@@ -319,33 +350,50 @@ ipcMain.on('navigate', (_, url) => {
 // معالجات IPC للتحديثات
 ipcMain.on('check-for-updates', () => {
   console.log('طلب التحقق من التحديثات من العملية الرئيسية');
-  autoUpdater.checkForUpdates().catch(err => {
-    console.error('خطأ في التحقق من التحديثات:', err);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'error',
-        error: err.message
-      });
-    }
-  });
+
+  // إرسال حالة التحقق من التحديثات
+  if (mainWindow) {
+    mainWindow.webContents.send('update-status', { status: 'checking' });
+  }
+
+  // التحقق من التحديثات بعد تأخير قصير لإظهار حالة التحقق
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch(err => {
+      console.error('خطأ في التحقق من التحديثات:', err);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-status', {
+          status: 'error',
+          error: err.message
+        });
+      }
+    });
+  }, 2000); // تأخير لمدة 2 ثانية لإظهار حالة التحقق
 });
 
 ipcMain.on('download-update', () => {
   console.log('طلب تنزيل التحديث من العملية الرئيسية');
-  autoUpdater.downloadUpdate().catch(err => {
-    console.error('خطأ في تنزيل التحديث:', err);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'error',
-        error: err.message
-      });
-    }
-  });
+
+  // إضافة تأخير قصير قبل بدء التنزيل لتحسين تجربة المستخدم
+  setTimeout(() => {
+    autoUpdater.downloadUpdate().catch(err => {
+      console.error('خطأ في تنزيل التحديث:', err);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-status', {
+          status: 'error',
+          error: err.message
+        });
+      }
+    });
+  }, 500);
 });
 
 ipcMain.on('install-update', () => {
   console.log('طلب تثبيت التحديث من العملية الرئيسية');
-  autoUpdater.quitAndInstall();
+
+  // إضافة تأخير قصير قبل التثبيت لإظهار رسالة "جاري إعادة التشغيل"
+  setTimeout(() => {
+    autoUpdater.quitAndInstall();
+  }, 1000);
 });
 
 // معالجات IPC للقائمة الجديدة

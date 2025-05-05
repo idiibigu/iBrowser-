@@ -1,0 +1,41 @@
+appId: com.idiibi.browser
+productName: iBrowser
+copyright: Copyright © 2025 idiibi
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - "src/**/*"
+  - "node_modules/**/*"
+  - "package.json"
+
+win:
+  icon: src/assets/logo/worksuite-logo.png
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: iBrowser
+  uninstallDisplayName: iBrowser
+  artifactName: iBrowser-Setup-${version}.${ext}
+
+portable:
+  artifactName: iBrowser-Portable-${version}.${ext}
+
+publish:
+  provider: github
+  owner: idiibigu
+  repo: iBrowser-
+  releaseType: release
