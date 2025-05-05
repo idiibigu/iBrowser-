@@ -1,0 +1,218 @@
+/* تصميم جديد لشاشة التحميل */
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0f172a; /* لون ثابت بدلاً من متغير لضمان التوافق */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    will-change: opacity, visibility; /* تحسين الأداء */
+}
+
+.loading-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* منع التفاعل عند الإخفاء */
+}
+
+.loading-content {
+    text-align: center;
+    width: 240px; /* تقليل العرض بعد إزالة الشعار */
+    padding: 1.8rem;
+    border-radius: 16px;
+    background-color: rgba(30, 41, 59, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0); /* تحسين الأداء */
+    margin: 0 auto; /* ضمان التمركز */
+    -webkit-backdrop-filter: blur(5px); /* تأثير ضبابي للخلفية */
+    backdrop-filter: blur(5px);
+}
+
+/* تأثير الخلفية المتحركة */
+.loading-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent,
+        rgba(3, 131, 135, 0.15), /* تغيير اللون ليتناسب مع اللون الجديد */
+        transparent 30%
+    );
+    animation: rotate 4s linear infinite;
+    will-change: transform; /* تحسين الأداء */
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* تم إزالة أنماط الشعار */
+
+.loading-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px; /* تحسين قراءة النص */
+    padding-top: 0.5rem; /* إضافة هامش علوي بعد إزالة الشعار */
+}
+
+.loading-progress {
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px; /* زيادة الانحناء */
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* إضافة ظل داخلي */
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #038387, #04a3a8); /* ألوان ثابتة بدلاً من متغيرات */
+    border-radius: 10px;
+    width: 0%;
+    position: relative;
+    animation: progress 1.5s ease-out forwards; /* تسريع الأنيميشن */
+    will-change: width; /* تحسين الأداء */
+}
+
+@keyframes progress {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+/* تأثير الوميض على شريط التقدم */
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: shimmer 1.2s infinite; /* تسريع الأنيميشن */
+    will-change: transform; /* تحسين الأداء */
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* تأثير الجزيئات في الخلفية */
+.loading-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none; /* منع التفاعل مع الجزيئات */
+}
+
+.particle {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: #038387; /* لون ثابت بدلاً من متغير */
+    border-radius: 50%;
+    opacity: 0.3;
+    will-change: transform; /* تحسين الأداء */
+}
+
+/* تحسينات للأجهزة المختلفة بعد إزالة الشعار */
+/* للهواتف الصغيرة */
+@media (max-width: 375px) {
+    .loading-content {
+        width: 200px;
+        padding: 1.4rem;
+    }
+
+    .loading-text {
+        font-size: 0.95rem;
+        margin-bottom: 1.2rem;
+        padding-top: 0.3rem;
+    }
+}
+
+/* للهواتف المتوسطة والكبيرة */
+@media (min-width: 376px) and (max-width: 767px) {
+    .loading-content {
+        width: 220px;
+        padding: 1.6rem;
+    }
+
+    .loading-text {
+        font-size: 1rem;
+        padding-top: 0.4rem;
+    }
+}
+
+/* للأجهزة اللوحية */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .loading-content {
+        width: 260px;
+        padding: 1.8rem;
+    }
+
+    .loading-text {
+        font-size: 1.1rem;
+        padding-top: 0.5rem;
+    }
+}
+
+/* للشاشات الكبيرة */
+@media (min-width: 1024px) {
+    .loading-content {
+        width: 280px;
+        padding: 2rem;
+    }
+
+    .loading-text {
+        font-size: 1.2rem;
+        padding-top: 0.6rem;
+    }
+}
+
+/* تحسينات للوضع العمودي والأفقي */
+@media (orientation: landscape) and (max-height: 500px) {
+    .loading-content {
+        padding: 1.2rem;
+        width: 220px;
+    }
+
+    .loading-text {
+        margin-bottom: 1rem;
+        padding-top: 0.2rem;
+    }
+}

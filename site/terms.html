@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الشروط والأحكام - idiibi</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <!-- Browser theme colors - using only for Chrome/Android as it's not supported in Firefox/Opera -->
+    <!-- We'll use CSS variables as a cross-browser solution instead -->
+    <!-- Microsoft Edge -->
+    <meta name="msapplication-navbutton-color" content="#0f172a">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="idiibi">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://idiibi.com/terms.html">
+    <meta property="og:title" content="الشروط والأحكام - idiibi">
+    <meta property="og:description" content="الشروط والأحكام وسياسة الخصوصية لشركة idiibi. اطلع على حقوق الملكية الفكرية، سياسة الخصوصية، والتزامات العميل.">
+    <meta property="og:image" content="https://idiibi.com/images/og.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://idiibi.com/terms.html">
+    <meta property="twitter:title" content="الشروط والأحكام - idiibi">
+    <meta property="twitter:description" content="الشروط والأحكام وسياسة الخصوصية لشركة idiibi. اطلع على حقوق الملكية الفكرية، سياسة الخصوصية، والتزامات العميل.">
+    <meta property="twitter:image" content="https://idiibi.com/images/og.jpg">
+
+    <!-- Cross-browser color scheme support through CSS -->
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --theme-color: #0f172a;
+        }
+        /* Apply theme color for Chrome/Android only */
+        @supports (-webkit-appearance: none) {
+          html {
+            background-color: #0f172a;
+          }
+        }
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --theme-color: #f8fafc;
+        }
+        /* Apply theme color for Chrome/Android only */
+        @supports (-webkit-appearance: none) {
+          html {
+            background-color: #f8fafc;
+          }
+        }
+      }
+    </style>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Arabic Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/new-header.css">
+    <link rel="stylesheet" href="css/new-footer.css">
+    <link rel="stylesheet" href="css/new-loading.css">
+    <link rel="stylesheet" href="css/arabic-fixes.css">
+    <link rel="stylesheet" href="css/mobile-fixes.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/circle-progress.css">
+    <link rel="stylesheet" href="css/scroll.css">
+    <link rel="stylesheet" href="css/browser-compatibility.css">
+    <link rel="stylesheet" href="css/connection-status.css">
+    <link rel="stylesheet" href="css/datetime-styles.css">
+    <link rel="stylesheet" href="css/social-icons.css">
+    <style>
+        /* تنسيقات خاصة بصفحة الشروط والأحكام */
+        .terms-section {
+            padding: 60px 0;
+            background-color: #0f172a;
+        }
+
+        .terms-card {
+            background-color: #1e293b;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .terms-section-title {
+            color: #38bdf8;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .terms-list {
+            padding-right: 20px;
+            margin-bottom: 20px;
+        }
+
+        .terms-list li {
+            margin-bottom: 10px;
+        }
+
+        .terms-contact {
+            background-color: rgba(56, 189, 248, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            border-right: 4px solid #38bdf8;
+        }
+
+        .terms-contact a {
+            color: #38bdf8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .terms-contact a:hover {
+            color: #0ea5e9;
+            text-decoration: underline;
+        }
+
+        .terms-date {
+            font-style: italic;
+            opacity: 0.8;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-text">جاري التحميل...</div>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- القائمة الرئيسية -->
+    <header class="new-header">
+        <div class="container">
+            <div class="header-container">
+                <!-- الشعار والعلامة التجارية -->
+                <div class="brand-container">
+                    <a class="navbar-brand" href="index.html">
+                        <img src="icons/icon-192x192.png" alt="شعار idiibi" class="brand-logo">
+                        <span class="brand-text">idiibi</span>
+                    </a>
+                </div>
+
+                <!-- زر القائمة للجوال -->
+                <button class="mobile-toggle" type="button" aria-label="فتح القائمة">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+
+                <!-- القائمة الرئيسية -->
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">الرئيسية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="services.html">خدماتنا</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">من نحن</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="projects.html">المشاريع</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">اتصل بنا</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="anydesk-support.html">الدعم عن بعد</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="hostinger-promo.html">استضافة هوستينجر</a>
+                        </li>
+                    </ul>
+
+                    <!-- أزرار العمل (مرئية في الجوال) -->
+                    <div class="action-buttons d-lg-none">
+                        <a href="contact.html" class="cta-button">ابدأ الآن</a>
+                        <a href="en/terms.html" class="lang-switch" id="mobile-lang-switch">EN</a>
+                    </div>
+                </nav>
+
+                <!-- أزرار العمل (مرئية في سطح المكتب) -->
+                <div class="action-buttons d-none d-lg-flex">
+                    <a href="contact.html" class="cta-button">ابدأ الآن</a>
+                    <a href="en/terms.html" class="lang-switch">EN</a>
+                </div>
+
+                <!-- تأثير الإضاءة -->
+                <div class="glow-effect"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h1 class="section-title">الشروط والأحكام وسياسة الخصوصية</h1>
+                    <p class="section-description">نرجو قراءة هذه الشروط والأحكام بعناية قبل استخدام خدماتنا</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Terms Section -->
+        <section class="terms-section">
+            <div class="container">
+                <div class="terms-card">
+                    <h2 class="terms-section-title">1. مقدمة</h2>
+                    <p>مرحبًا بك في موقع شركة idiibi للخدمات التقنية. باستخدامك لموقعنا وخدماتنا، فإنك توافق على الالتزام بهذه الشروط والأحكام وسياسة الخصوصية. إذا كنت لا توافق على أي جزء من هذه الشروط، يرجى عدم استخدام موقعنا أو خدماتنا.</p>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">2. تعريفات</h2>
+                    <p>في هذه الشروط والأحكام، تشير المصطلحات التالية إلى:</p>
+                    <ul class="terms-list">
+                        <li><strong>"الشركة"، "نحن"، "لنا"</strong>: تشير إلى شركة idiibi للخدمات التقنية.</li>
+                        <li><strong>"الموقع"</strong>: يشير إلى موقع idiibi.com وجميع الصفحات والخدمات المرتبطة به.</li>
+                        <li><strong>"الخدمات"</strong>: تشير إلى جميع الخدمات التي تقدمها الشركة، بما في ذلك تصميم المواقع، وتطوير الأنظمة، والتسويق الرقمي، وغيرها.</li>
+                        <li><strong>"المستخدم"، "أنت"</strong>: تشير إلى أي شخص يستخدم الموقع أو يستفيد من خدماتنا.</li>
+                        <li><strong>"المحتوى"</strong>: يشير إلى جميع المعلومات والبيانات والنصوص والصور والرسومات والفيديوهات وغيرها من المواد المتاحة على الموقع.</li>
+                    </ul>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">3. استخدام الموقع</h2>
+                    <p>باستخدامك لموقعنا، فإنك توافق على:</p>
+                    <ul class="terms-list">
+                        <li>استخدام الموقع بطريقة قانونية وأخلاقية.</li>
+                        <li>عدم استخدام الموقع لأي غرض غير مشروع أو محظور بموجب هذه الشروط.</li>
+                        <li>عدم محاولة الوصول غير المصرح به إلى أي جزء من الموقع أو أنظمتنا.</li>
+                        <li>عدم استخدام الموقع بطريقة قد تعطل أو تضر أو تؤثر سلبًا على أداء الموقع.</li>
+                        <li>عدم نقل أي فيروسات أو برامج ضارة من خلال موقعنا.</li>
+                    </ul>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">4. الخدمات والمنتجات</h2>
+                    <p>تقدم شركة idiibi مجموعة متنوعة من الخدمات التقنية، بما في ذلك:</p>
+                    <ul class="terms-list">
+                        <li>تصميم وتطوير المواقع الإلكترونية.</li>
+                        <li>تطوير الأنظمة الإدارية والتطبيقات.</li>
+                        <li>خدمات التسويق الرقمي.</li>
+                        <li>استضافة المواقع وخدمات الدومين.</li>
+                        <li>خدمات Google Workspace وحلول الأعمال.</li>
+                    </ul>
+                    <p>تخضع جميع الخدمات لشروط وأحكام خاصة يتم الاتفاق عليها بشكل منفصل عند التعاقد.</p>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">5. حقوق الملكية الفكرية</h2>
+                    <p>جميع المحتويات المنشورة على الموقع، بما في ذلك النصوص والصور والشعارات والتصميمات والبرمجيات، هي ملك لشركة idiibi أو مرخصة لها، وتخضع لحماية حقوق الملكية الفكرية. لا يجوز نسخ أو توزيع أو إعادة إنتاج أي محتوى من الموقع دون إذن كتابي مسبق من الشركة.</p>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">6. سياسة الخصوصية</h2>
+                    <p>نحن نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية. تصف سياسة الخصوصية الخاصة بنا كيفية جمع واستخدام وحماية المعلومات التي تقدمها لنا:</p>
+                    <ul class="terms-list">
+                        <li><strong>المعلومات التي نجمعها</strong>: قد نجمع معلومات شخصية مثل الاسم وعنوان البريد الإلكتروني ورقم الهاتف عند تواصلك معنا أو استخدامك لخدماتنا.</li>
+                        <li><strong>استخدام المعلومات</strong>: نستخدم المعلومات التي نجمعها لتقديم وتحسين خدماتنا، والتواصل معك، وتلبية طلباتك.</li>
+                        <li><strong>مشاركة المعلومات</strong>: لا نبيع أو نؤجر أو نتاجر بمعلوماتك الشخصية مع أطراف ثالثة. قد نشارك معلوماتك مع مزودي الخدمات الذين يساعدوننا في تقديم خدماتنا.</li>
+                        <li><strong>أمان المعلومات</strong>: نتخذ إجراءات أمنية معقولة لحماية معلوماتك الشخصية من الوصول غير المصرح به أو الإفصاح.</li>
+                        <li><strong>ملفات تعريف الارتباط</strong>: قد نستخدم ملفات تعريف الارتباط وتقنيات مماثلة لتحسين تجربتك على موقعنا وجمع معلومات حول كيفية استخدامك له.</li>
+                    </ul>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">7. التزامات العميل</h2>
+                    <p>عند استخدام خدماتنا، يتعهد العميل بما يلي:</p>
+                    <ul class="terms-list">
+                        <li>تقديم معلومات دقيقة وكاملة عند التسجيل أو التواصل معنا.</li>
+                        <li>الالتزام بجميع القوانين واللوائح المعمول بها.</li>
+                        <li>دفع جميع الرسوم المستحقة في الوقت المحدد وفقًا للاتفاقيات المبرمة.</li>
+                        <li>عدم استخدام خدماتنا لأغراض غير قانونية أو ضارة.</li>
+                        <li>الحفاظ على سرية أي بيانات اعتماد أو كلمات مرور مقدمة.</li>
+                    </ul>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">8. حدود المسؤولية</h2>
+                    <p>تقدم شركة idiibi خدماتها "كما هي" دون أي ضمانات من أي نوع. لا نتحمل المسؤولية عن أي أضرار مباشرة أو غير مباشرة أو عرضية أو خاصة أو تبعية ناتجة عن استخدام أو عدم القدرة على استخدام خدماتنا.</p>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">9. التعديلات على الشروط والأحكام</h2>
+                    <p>نحتفظ بالحق في تعديل هذه الشروط والأحكام في أي وقت. سيتم نشر التغييرات على هذه الصفحة، وستكون سارية المفعول فور نشرها. نشجعك على مراجعة هذه الشروط بانتظام للبقاء على اطلاع بأي تغييرات.</p>
+                </div>
+
+                <div class="terms-card">
+                    <h2 class="terms-section-title">10. القانون المطبق وتسوية النزاعات</h2>
+                    <p>تخضع هذه الشروط والأحكام للقوانين المصرية. أي نزاع ينشأ عن استخدام موقعنا أو خدماتنا سيتم حله وديًا أولاً، وإذا تعذر ذلك، فسيتم إحالته إلى المحاكم المختصة في مصر.</p>
+
+                    <div class="terms-contact">
+                        <p>إذا كان لديك أي أسئلة أو استفسارات حول هذه الشروط والأحكام أو سياسة الخصوصية، يرجى التواصل معنا على:</p>
+                        <p>البريد الإلكتروني: <a href="mailto:info@idiibi.com">info@idiibi.com</a></p>
+                        <p>الهاتف: <a href="tel:+201018719010">+20 10 1871 9010</a></p>
+                    </div>
+
+                    <p class="terms-date">آخر تحديث: <span id="last-updated-date">يونيو 2024</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content text-center">
+                    <h2 class="cta-title">هل أنت مستعد للعمل معنا؟</h2>
+                    <p class="cta-description">دعنا نساعدك في تحقيق أهدافك من خلال حلولنا المبتكرة</p>
+                    <a href="contact.html" class="btn btn-primary btn-lg">تواصل معنا الآن</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="new-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="footer-brand">
+                            <img src="icons/icon-192x192.png" alt="شعار idiibi" class="footer-logo">
+                            <h3 class="footer-brand-name">idiibi</h3>
+                        </div>
+                        <p class="footer-description">نقدم حلول تقنية متكاملة لتطوير أعمالك وتحقيق أهدافك بأحدث التقنيات</p>
+                        <div class="footer-social">
+                            <a href="https://www.facebook.com/idiibigu" class="social-link" title="تابعنا على Facebook" target="_blank" rel="noopener">
+                                <img src="images/social/facebook.svg" alt="Facebook" class="social-icon">
+                            </a>
+                            <a href="https://www.instagram.com/idiibigu/" class="social-link" title="تابعنا على Instagram" target="_blank" rel="noopener">
+                                <img src="images/social/instagram.svg" alt="Instagram" class="social-icon">
+                            </a>
+                            <a href="https://www.threads.com/@idiibigu" class="social-link" title="تابعنا على Threads" target="_blank" rel="noopener">
+                                <img src="images/social/threads.svg" alt="Threads" class="social-icon">
+                            </a>
+                            <a href="https://www.linkedin.com/company/idiibi-group/" class="social-link" title="تابعنا على LinkedIn" target="_blank" rel="noopener">
+                                <img src="images/social/linkedin.svg" alt="LinkedIn" class="social-icon">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <h4 class="footer-title">روابط سريعة</h4>
+                        <ul class="footer-links">
+                            <li><a href="index.html">الرئيسية</a></li>
+                            <li><a href="services.html">خدماتنا</a></li>
+                            <li><a href="about.html">من نحن</a></li>
+                            <li><a href="projects.html">المشاريع</a></li>
+                            <li><a href="contact.html">اتصل بنا</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-4">
+                        <h4 class="footer-title">خدماتنا</h4>
+                        <ul class="footer-links">
+                            <li><a href="services.html#web-design">تصميم المواقع</a></li>
+                            <li><a href="services.html#management-systems">أنظمة الإدارة</a></li>
+                            <li><a href="services.html#digital-marketing">التسويق الرقمي</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <h4 class="footer-title">تواصل معنا</h4>
+                        <ul class="footer-contact">
+                            <li><i class="fas fa-map-marker-alt"></i> <span>القاهرة، مصر</span></li>
+                            <li><i class="fas fa-phone"></i> <span><a href="tel:+201018719010">+20 10 1871 9010</a></span></li>
+                            <li><i class="fas fa-envelope"></i> <span><a href="mailto:info@idiibi.com">info@idiibi.com</a></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; <span class="copyright-year">2023</span> idiibi. جميع الحقوق محفوظة. <span class="current-time-wrapper">الساعة الآن: <span class="current-time">00:00:00</span></span></p>
+                </div>
+                <div class="footer-bottom-links">
+                    <a href="terms.html">الشروط والأحكام</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Loading JS -->
+    <script src="js/new-loading.js"></script>
+
+    <!-- New Header JS -->
+    <script src="js/new-header.js"></script>
+
+    <!-- Scroll Utils -->
+    <script src="js/scroll-utils.js"></script>
+
+    <!-- DateTime Utils -->
+    <script src="js/datetime-utils.js"></script>
+
+    <!-- Business Tips Notifications -->
+    <script src="js/business-tips-notifications.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

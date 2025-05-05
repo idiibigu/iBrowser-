@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <style>
+    .st0{fill:#0f172a;}
+    .st1{fill:#00c8c8;}
+    .st2{fill:#038387;}
+    .st3{fill:#ffffff;}
+    .st4{fill:rgba(255,255,255,0.2);}
+    .st5{fill:rgba(3,131,135,0.3);}
+  </style>
+  <rect class="st0" width="500" height="500"/>
+  <circle class="st5" cx="250" cy="250" r="200"/>
+  
+  <!-- Analytics Dashboard -->
+  <g transform="translate(100, 100)">
+    <rect class="st2" x="0" y="0" width="300" height="180" rx="10"/>
+    <rect class="st0" x="5" y="5" width="290" height="170" rx="8"/>
+    
+    <!-- Chart -->
+    <g transform="translate(20, 20)">
+      <rect class="st3" x="0" y="0" width="260" height="140" rx="5" opacity="0.2"/>
+      
+      <!-- Bar Chart -->
+      <rect class="st1" x="30" y="100" width="20" height="30" opacity="0.8"/>
+      <rect class="st1" x="60" y="80" width="20" height="50" opacity="0.8"/>
+      <rect class="st1" x="90" y="60" width="20" height="70" opacity="0.8"/>
+      <rect class="st1" x="120" y="90" width="20" height="40" opacity="0.8"/>
+      <rect class="st1" x="150" y="70" width="20" height="60" opacity="0.8"/>
+      <rect class="st1" x="180" y="50" width="20" height="80" opacity="0.8"/>
+      <rect class="st1" x="210" y="40" width="20" height="90" opacity="0.8"/>
+      
+      <!-- Axis Lines -->
+      <line x1="20" y1="130" x2="240" y2="130" stroke="#ffffff" stroke-width="2"/>
+      <line x1="20" y1="30" x2="20" y2="130" stroke="#ffffff" stroke-width="2"/>
+      
+      <!-- Growth Line -->
+      <polyline points="30,90 60,70 90,50 120,60 150,40 180,30 210,20" fill="none" stroke="#00c8c8" stroke-width="3"/>
+      <circle cx="30" cy="90" r="3" fill="#00c8c8"/>
+      <circle cx="60" cy="70" r="3" fill="#00c8c8"/>
+      <circle cx="90" cy="50" r="3" fill="#00c8c8"/>
+      <circle cx="120" cy="60" r="3" fill="#00c8c8"/>
+      <circle cx="150" cy="40" r="3" fill="#00c8c8"/>
+      <circle cx="180" cy="30" r="3" fill="#00c8c8"/>
+      <circle cx="210" cy="20" r="3" fill="#00c8c8"/>
+    </g>
+  </g>
+  
+  <!-- Social Media Icons -->
+  <g transform="translate(100, 300)">
+    <circle class="st1" cx="30" cy="30" r="25"/>
+    <path class="st3" d="M30,17 C23,17 17,23 17,30 C17,36.5 22,41.5 28.5,42 L28.5,33 L25.5,33 L25.5,30 L28.5,30 L28.5,27.5 C28.5,25 30,23.5 32.5,23.5 C33.5,23.5 34.5,23.7 34.5,23.7 L34.5,26.5 L33,26.5 C31.5,26.5 31,27.5 31,28.5 L31,30 L34.5,30 L34,33 L31,33 L31,42 C37.5,41.5 43,36.5 43,30 C43,23 37,17 30,17 Z" opacity="0.9"/>
+  </g>
+  
+  <g transform="translate(170, 300)">
+    <circle class="st1" cx="30" cy="30" r="25"/>
+    <path class="st3" d="M42,24 C41,24.5 40,24.5 39,25 C40,24 40.5,23 41,22 C40,22.5 39,23 37.5,23.5 C36.5,22.5 35,22 33.5,22 C30.5,22 28,24.5 28,27.5 C28,28 28,28.5 28,29 C23.5,29 19.5,26.5 17,23 C16.5,24 16,25 16,26.5 C16,28.5 17,30.5 18.5,31.5 C17.5,31.5 16.5,31 15.5,30.5 C15.5,33 17.5,35 20,35.5 C19.5,35.5 19,35.5 18.5,35.5 C18,35.5 17.5,35.5 17,35.5 C18,37.5 20,39 22.5,39 C20.5,40.5 18,41.5 15.5,41.5 C15,41.5 14.5,41.5 14,41.5 C16.5,43 19.5,44 22.5,44 C33.5,44 39.5,35 39.5,27 L39.5,26 C40.5,25 41.5,24 42,23 L42,24 Z" opacity="0.9"/>
+  </g>
+  
+  <g transform="translate(240, 300)">
+    <circle class="st1" cx="30" cy="30" r="25"/>
+    <path class="st3" d="M37,22 L23,22 C21.5,22 20,23.5 20,25 L20,39 C20,40.5 21.5,42 23,42 L37,42 C38.5,42 40,40.5 40,39 L40,25 C40,23.5 38.5,22 37,22 Z M30,38 C26,38 23,35 23,31 C23,27 26,24 30,24 C34,24 37,27 37,31 C37,35 34,38 30,38 Z M37,26 C36,26 35,25 35,24 C35,23 36,22 37,22 C38,22 39,23 39,24 C39,25 38,26 37,26 Z" opacity="0.9"/>
+    <circle class="st3" cx="30" cy="31" r="4" opacity="0.9"/>
+  </g>
+  
+  <g transform="translate(310, 300)">
+    <circle class="st1" cx="30" cy="30" r="25"/>
+    <path class="st3" d="M30,17 C22.5,17 17,22.5 17,30 C17,36 20.5,41 25.5,42.5 C26,42.5 26,42 26,42 C26,41.5 26,41 26,40.5 C23,39.5 22,37.5 22,37.5 C21.5,36.5 21,36.5 21,36.5 C20,36 21,36 21,36 C22,36 22.5,37 22.5,37 C23.5,38.5 25,38 26,38 C26,37 26.5,36.5 27,36 C24.5,35.5 22,34.5 22,30 C22,28.5 22.5,27.5 23.5,26.5 C23.5,26.5 23,25.5 23.5,24 C23.5,24 23.5,24 23.5,24 C23.5,24 23.5,24 23.5,24 C24,24 26,24 28,25.5 C28.5,25.5 29.5,25 30.5,25 C31.5,25 32.5,25 33,25.5 C35,24 37,24 37.5,24 C38,25.5 37.5,26.5 37.5,26.5 C38.5,27.5 39,28.5 39,30 C39,34.5 36.5,35.5 34,36 C34.5,36.5 35,37.5 35,38.5 L35,42 C35,42.5 35,42.5 35.5,42.5 C40.5,41 44,36 44,30 C43,22.5 37.5,17 30,17 Z" opacity="0.9"/>
+  </g>
+  
+  <!-- SEO Elements -->
+  <g transform="translate(170, 370)">
+    <rect class="st2" x="0" y="0" width="160" height="40" rx="5"/>
+    <rect class="st0" x="5" y="5" width="150" height="30" rx="3"/>
+    
+    <!-- Search Bar -->
+    <rect class="st3" x="10" y="10" width="100" height="20" rx="10" opacity="0.8"/>
+    <circle class="st1" cx="120" cy="20" r="10"/>
+    <path class="st3" d="M123,17 L117,23 M117,17 L123,23" stroke="#ffffff" stroke-width="2"/>
+  </g>
+  
+  <!-- Connection Lines -->
+  <g stroke="#00c8c8" stroke-width="2" fill="none">
+    <path d="M250,280 C250,290 130,300 130,330"/>
+    <path d="M250,280 C250,290 200,300 200,330"/>
+    <path d="M250,280 C250,290 270,300 270,330"/>
+    <path d="M250,280 C250,290 340,300 340,330"/>
+    <path d="M250,280 C250,310 250,350 250,370"/>
+  </g>
+</svg>

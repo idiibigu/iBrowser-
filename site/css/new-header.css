@@ -1,0 +1,453 @@
+/*
+ * Nuevo diseño de encabezado (header) para idiibi
+ * Diseño moderno y atractivo que mantiene la identidad de la marca
+ */
+
+/* Estilos generales del encabezado */
+.new-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(15, 23, 42, 0.9);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    /* Fallback for browsers that don't support backdrop-filter */
+    @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+        background-color: #0f172a;
+    }
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme="light"] .new-header {
+    background-color: rgba(248, 250, 252, 0.9);
+    @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+        background-color: #f8fafc;
+    }
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor del encabezado */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+/* Logo y marca */
+.new-header .brand-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 5px 15px;
+    border-radius: 50px;
+    background: rgba(3, 131, 135, 0.1);
+    margin-right: 20px;
+    transition: all 0.3s ease;
+}
+
+.new-header .brand-container:hover {
+    background: rgba(3, 131, 135, 0.2);
+    transform: translateY(-2px);
+}
+
+.new-header .navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0;
+}
+
+.new-header .brand-logo {
+    width: 45px;
+    height: 45px;
+    transition: transform 0.5s ease;
+    filter: drop-shadow(0 0 5px rgba(3, 131, 135, 0.5));
+}
+
+.new-header .navbar-brand:hover .brand-logo {
+    transform: rotate(10deg) scale(1.1);
+}
+
+.new-header .brand-text {
+    font-family: 'Cairo', 'Almarai', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-right: 10px;
+    margin-left: 10px;
+    text-shadow: 0 0 10px rgba(3, 131, 135, 0.3);
+}
+
+/* Navegación principal */
+.new-header .main-nav {
+    display: flex;
+    align-items: center;
+}
+
+.new-header .nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.new-header .nav-item {
+    margin: 0 2px;
+    position: relative;
+}
+
+.new-header .nav-link {
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.new-header .nav-link:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    opacity: 0;
+}
+
+.new-header .nav-link:hover:before,
+.new-header .nav-link.active:before {
+    width: 70%;
+    opacity: 1;
+}
+
+.new-header .nav-link:hover,
+.new-header .nav-link.active {
+    color: var(--primary-light);
+    background-color: rgba(3, 131, 135, 0.1);
+    transform: translateY(-2px);
+}
+
+.new-header .nav-link i {
+    margin-left: 5px;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.new-header .nav-link:hover i {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.new-header .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 220px;
+    background: rgba(30, 41, 59, 0.95);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.new-header .nav-item:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.new-header .dropdown-item {
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: block;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.new-header .dropdown-item:hover {
+    background-color: rgba(3, 131, 135, 0.1);
+    color: var(--primary-light);
+    transform: translateX(-5px);
+}
+
+.new-header .dropdown-item i {
+    margin-left: 8px;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.new-header .dropdown-item:hover i {
+    opacity: 1;
+    transform: translateX(-3px);
+}
+
+/* Botones de acción */
+.new-header .action-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.new-header .lang-switch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(3, 131, 135, 0.1);
+    color: var(--text-color);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+
+.new-header .lang-switch:hover {
+    background: rgba(3, 131, 135, 0.2);
+    color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.new-header .cta-button {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+    color: white;
+    font-family: 'Cairo', 'Almarai', sans-serif;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 15px rgba(3, 131, 135, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.new-header .cta-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+}
+
+.new-header .cta-button:hover:before {
+    left: 100%;
+}
+
+.new-header .cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(3, 131, 135, 0.4);
+}
+
+/* Botón de menú móvil */
+.new-header .mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.new-header .mobile-toggle:hover {
+    background: rgba(3, 131, 135, 0.1);
+    color: var(--primary-light);
+}
+
+.new-header .mobile-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-color);
+    margin: 5px auto;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.new-header .mobile-toggle.active .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+    background-color: var(--primary-light);
+}
+
+.new-header .mobile-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.new-header .mobile-toggle.active .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+    background-color: var(--primary-light);
+}
+
+/* Efectos de iluminación */
+.new-header .glow-effect {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(3, 131, 135, 0.2), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.new-header:hover .glow-effect {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .new-header .mobile-toggle {
+        display: block;
+    }
+
+    .new-header .main-nav {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: calc(100vh - 70px);
+        background: rgba(15, 23, 42, 0.98);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        transition: all 0.4s ease;
+        overflow-y: auto;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+    }
+
+    .new-header .main-nav.active {
+        right: 0;
+    }
+
+    .new-header .nav-list {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .new-header .nav-item {
+        margin: 5px 0;
+        width: 100%;
+    }
+
+    .new-header .nav-link {
+        padding: 12px 15px;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .new-header .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0 10px;
+        margin: 0;
+        transition: all 0.3s ease;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+
+    .new-header .nav-item.dropdown-open .dropdown-menu {
+        max-height: 500px;
+        padding: 10px;
+        margin: 5px 0;
+        border-right: 2px solid var(--primary-color);
+    }
+
+    .new-header .action-buttons {
+        margin-top: 20px;
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .new-header .cta-button {
+        width: 100%;
+        text-align: center;
+        margin: 0;
+    }
+
+    .new-header .action-buttons .lang-switch {
+        width: 100%;
+        height: 40px;
+        border-radius: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+    }
+
+    .new-header #mobile-lang-switch {
+        background: rgba(3, 131, 135, 0.1);
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+    .new-header #mobile-lang-switch:hover {
+        background: rgba(3, 131, 135, 0.2);
+        color: var(--primary-light);
+    }
+}
+
+@media (max-width: 576px) {
+    .new-header .brand-text {
+        font-size: 1.2rem;
+    }
+
+    .new-header .brand-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .new-header .main-nav {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+

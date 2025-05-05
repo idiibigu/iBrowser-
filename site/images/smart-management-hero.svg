@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <title>Smart Management Systems Hero</title>
+  <rect width="800" height="600" fill="#1a1a1a"/>
+  
+  <!-- Background Grid -->
+  <g opacity="0.1">
+    <path d="M0,100 L800,100" stroke="#ffffff" stroke-width="1"/>
+    <path d="M0,200 L800,200" stroke="#ffffff" stroke-width="1"/>
+    <path d="M0,300 L800,300" stroke="#ffffff" stroke-width="1"/>
+    <path d="M0,400 L800,400" stroke="#ffffff" stroke-width="1"/>
+    <path d="M0,500 L800,500" stroke="#ffffff" stroke-width="1"/>
+    
+    <path d="M100,0 L100,600" stroke="#ffffff" stroke-width="1"/>
+    <path d="M200,0 L200,600" stroke="#ffffff" stroke-width="1"/>
+    <path d="M300,0 L300,600" stroke="#ffffff" stroke-width="1"/>
+    <path d="M400,0 L400,600" stroke="#ffffff" stroke-width="1"/>
+    <path d="M500,0 L500,600" stroke="#ffffff" stroke-width="1"/>
+    <path d="M600,0 L600,600" stroke="#ffffff" stroke-width="1"/>
+    <path d="M700,0 L700,600" stroke="#ffffff" stroke-width="1"/>
+  </g>
+  
+  <!-- Central Dashboard -->
+  <g transform="translate(400, 300)">
+    <!-- Main Dashboard Panel -->
+    <rect x="-180" y="-120" width="360" height="240" rx="15" fill="#333333"/>
+    <rect x="-170" y="-110" width="340" height="220" rx="10" fill="#1E1E1E"/>
+    
+    <!-- Dashboard Header -->
+    <rect x="-160" y="-100" width="320" height="40" rx="5" fill="#038387"/>
+    <circle cx="-140" cy="-80" r="5" fill="#ffffff"/>
+    <circle cx="-120" cy="-80" r="5" fill="#ffffff"/>
+    <circle cx="-100" cy="-80" r="5" fill="#ffffff"/>
+    <text x="0" y="-80" font-family="Arial" font-size="14" fill="#ffffff" text-anchor="middle">Smart Management Dashboard</text>
+    
+    <!-- Dashboard Widgets -->
+    <g>
+      <!-- Analytics Widget -->
+      <rect x="-155" y="-50" width="150" height="70" rx="5" fill="#2A2A2A"/>
+      <text x="-80" y="-35" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle">Analytics</text>
+      
+      <!-- Chart -->
+      <path d="M-140,-25 L-130,-15 L-120,-30 L-110,-10 L-100,-20 L-90,-5 L-80,-25 L-70,-15 L-60,-10" stroke="#038387" stroke-width="2" fill="none"/>
+      <circle cx="-140" cy="-25" r="3" fill="#038387"/>
+      <circle cx="-130" cy="-15" r="3" fill="#038387"/>
+      <circle cx="-120" cy="-30" r="3" fill="#038387"/>
+      <circle cx="-110" cy="-10" r="3" fill="#038387"/>
+      <circle cx="-100" cy="-20" r="3" fill="#038387"/>
+      <circle cx="-90" cy="-5" r="3" fill="#038387"/>
+      <circle cx="-80" cy="-25" r="3" fill="#038387"/>
+      <circle cx="-70" cy="-15" r="3" fill="#038387"/>
+      <circle cx="-60" cy="-10" r="3" fill="#038387"/>
+    </g>
+    
+    <g>
+      <!-- Tasks Widget -->
+      <rect x="5" y="-50" width="150" height="70" rx="5" fill="#2A2A2A"/>
+      <text x="80" y="-35" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle">Tasks</text>
+      
+      <!-- Task List -->
+      <rect x="15" y="-25" width="10" height="10" rx="2" stroke="#038387" stroke-width="1" fill="none"/>
+      <rect x="15" y="-5" width="10" height="10" rx="2" stroke="#038387" stroke-width="1" fill="none"/>
+      <path d="M17,0 L23,-6" stroke="#038387" stroke-width="1.5"/>
+      <path d="M17,-6 L23,0" stroke="#038387" stroke-width="1.5"/>
+      
+      <text x="35" y="-17" font-family="Arial" font-size="8" fill="#ffffff">Complete Project Plan</text>
+      <text x="35" y="3" font-family="Arial" font-size="8" fill="#ffffff">Review Client Feedback</text>
+    </g>
+    
+    <g>
+      <!-- CRM Widget -->
+      <rect x="-155" y="30" width="150" height="70" rx="5" fill="#2A2A2A"/>
+      <text x="-80" y="45" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle">CRM</text>
+      
+      <!-- User Icons -->
+      <circle cx="-130" cy="65" r="10" fill="#038387"/>
+      <path d="M-130,60 C-133,60 -135,63 -135,67 C-135,71 -133,75 -130,75 C-127,75 -125,71 -125,67 C-125,63 -127,60 -130,60" fill="#1E1E1E"/>
+      <circle cx="-130" cy="57" r="5" fill="#1E1E1E"/>
+      
+      <circle cx="-100" cy="65" r="10" fill="#038387"/>
+      <path d="M-100,60 C-103,60 -105,63 -105,67 C-105,71 -103,75 -100,75 C-97,75 -95,71 -95,67 C-95,63 -97,60 -100,60" fill="#1E1E1E"/>
+      <circle cx="-100" cy="57" r="5" fill="#1E1E1E"/>
+      
+      <circle cx="-70" cy="65" r="10" fill="#038387"/>
+      <path d="M-70,60 C-73,60 -75,63 -75,67 C-75,71 -73,75 -70,75 C-67,75 -65,71 -65,67 C-65,63 -67,60 -70,60" fill="#1E1E1E"/>
+      <circle cx="-70" cy="57" r="5" fill="#1E1E1E"/>
+    </g>
+    
+    <g>
+      <!-- ERP Widget -->
+      <rect x="5" y="30" width="150" height="70" rx="5" fill="#2A2A2A"/>
+      <text x="80" y="45" font-family="Arial" font-size="10" fill="#ffffff" text-anchor="middle">ERP</text>
+      
+      <!-- Connected Modules -->
+      <circle cx="40" cy="65" r="15" fill="#038387" opacity="0.7"/>
+      <text x="40" y="68" font-family="Arial" font-size="6" fill="#ffffff" text-anchor="middle">Finance</text>
+      
+      <circle cx="80" cy="65" r="15" fill="#038387" opacity="0.7"/>
+      <text x="80" y="68" font-family="Arial" font-size="6" fill="#ffffff" text-anchor="middle">HR</text>
+      
+      <circle cx="120" cy="65" r="15" fill="#038387" opacity="0.7"/>
+      <text x="120" y="68" font-family="Arial" font-size="6" fill="#ffffff" text-anchor="middle">Inventory</text>
+      
+      <path d="M55,65 L65,65" stroke="#ffffff" stroke-width="1"/>
+      <path d="M95,65 L105,65" stroke="#ffffff" stroke-width="1"/>
+    </g>
+  </g>
+  
+  <!-- Floating Elements -->
+  <g>
+    <!-- Data Flow Lines -->
+    <path d="M200,150 C250,100 300,200 350,150" stroke="#038387" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M450,150 C500,100 550,200 600,150" stroke="#038387" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M200,450 C250,400 300,500 350,450" stroke="#038387" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M450,450 C500,400 550,500 600,450" stroke="#038387" stroke-width="2" fill="none" opacity="0.6"/>
+    
+    <!-- Data Points -->
+    <circle cx="200" cy="150" r="5" fill="#038387"/>
+    <circle cx="350" cy="150" r="5" fill="#038387"/>
+    <circle cx="450" cy="150" r="5" fill="#038387"/>
+    <circle cx="600" cy="150" r="5" fill="#038387"/>
+    <circle cx="200" cy="450" r="5" fill="#038387"/>
+    <circle cx="350" cy="450" r="5" fill="#038387"/>
+    <circle cx="450" cy="450" r="5" fill="#038387"/>
+    <circle cx="600" cy="450" r="5" fill="#038387"/>
+    
+    <!-- Gear Icons -->
+    <g transform="translate(150, 250)">
+      <circle cx="0" cy="0" r="25" fill="#333333"/>
+      <path d="M0,-20 L5,-18 L5,-10 L0,-8 L-5,-10 L-5,-18 Z" fill="#038387"/>
+      <path d="M17,-10 L19,-5 L12,0 L10,5 L12,10 L19,5 L17,10 L12,15 L5,17 L0,20 L-5,17 L-12,15 L-17,10 L-19,5 L-12,0 L-10,-5 L-12,-10 L-17,-5 Z" fill="#038387"/>
+      <circle cx="0" cy="0" r="8" fill="#333333"/>
+    </g>
+    
+    <g transform="translate(650, 350)">
+      <circle cx="0" cy="0" r="25" fill="#333333"/>
+      <path d="M0,-20 L5,-18 L5,-10 L0,-8 L-5,-10 L-5,-18 Z" fill="#038387"/>
+      <path d="M17,-10 L19,-5 L12,0 L10,5 L12,10 L19,5 L17,10 L12,15 L5,17 L0,20 L-5,17 L-12,15 L-17,10 L-19,5 L-12,0 L-10,-5 L-12,-10 L-17,-5 Z" fill="#038387"/>
+      <circle cx="0" cy="0" r="8" fill="#333333"/>
+    </g>
+    
+    <!-- Mobile Device -->
+    <g transform="translate(700, 150)">
+      <rect x="-20" y="-35" width="40" height="70" rx="5" fill="#333333"/>
+      <rect x="-15" y="-30" width="30" height="60" fill="#1E1E1E"/>
+      <rect x="-10" y="-25" width="20" height="15" fill="#038387" opacity="0.8"/>
+      <rect x="-10" y="-5" width="20" height="10" fill="#ffffff" opacity="0.3"/>
+      <rect x="-10" y="10" width="20" height="10" fill="#ffffff" opacity="0.3"/>
+      <circle cx="0" cy="25" r="3" fill="#ffffff" opacity="0.5"/>
+    </g>
+    
+    <!-- Tablet Device -->
+    <g transform="translate(100, 450)">
+      <rect x="-30" y="-40" width="60" height="80" rx="5" fill="#333333"/>
+      <rect x="-25" y="-35" width="50" height="70" fill="#1E1E1E"/>
+      <rect x="-20" y="-30" width="40" height="20" fill="#038387" opacity="0.8"/>
+      <rect x="-20" y="-5" width="40" height="10" fill="#ffffff" opacity="0.3"/>
+      <rect x="-20" y="10" width="40" height="10" fill="#ffffff" opacity="0.3"/>
+      <rect x="-20" y="25" width="40" height="10" fill="#ffffff" opacity="0.3"/>
+    </g>
+  </g>
+  
+  <!-- Decorative Circles -->
+  <circle cx="100" cy="100" r="20" fill="#038387" opacity="0.5"/>
+  <circle cx="700" cy="500" r="30" fill="#038387" opacity="0.5"/>
+  <circle cx="200" cy="300" r="15" fill="#038387" opacity="0.5"/>
+  <circle cx="600" cy="150" r="25" fill="#038387" opacity="0.5"/>
+</svg>

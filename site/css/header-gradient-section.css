@@ -1,0 +1,118 @@
+/* تنسيق قسم الأزرار المتدرجة في الهيدر */
+
+/* القسم المتدرج */
+.header-gradient-section {
+    background: linear-gradient(135deg, #00a1b2 0%, #0088cc 100%);
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    margin: 15px 0;
+    width: 100%;
+}
+
+.header-gradient-title {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 15px;
+    color: #ffffff;
+    position: relative;
+    z-index: 2;
+    line-height: 1.5;
+}
+
+/* تنسيق الأزرار */
+.header-gradient-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+/* زر الاستكشاف الرئيسي */
+.btn-header-explore {
+    background: #00b894;
+    color: #ffffff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 400;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-header-explore:hover {
+    background: #00a383;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* زر ثانوي */
+.btn-header-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff; /* تأكيد على لون النص الأبيض */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 400;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-header-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* تعديلات للأجهزة المحمولة */
+@media (max-width: 768px) {
+    .header-gradient-section {
+        padding: 12px 15px;
+        margin: 10px 0;
+    }
+    
+    .header-gradient-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+    
+    .header-gradient-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .btn-header-explore, .btn-header-secondary {
+        width: 100%;
+        padding: 6px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* تعديلات للنسخة الإنجليزية */
+html[lang="en"] .header-gradient-section {
+    direction: ltr;
+    text-align: center;
+}
+
+/* تعديلات للدمج مع الهيدر */
+.header-gradient-container {
+    width: 100%;
+    padding: 0 15px;
+    margin-top: 10px;
+}

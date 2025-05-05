@@ -1,0 +1,297 @@
+/*
+ * تصميم الفوتر الجديد لموقع idiibi
+ * تصميم متناسق مع الهيدر الجديد
+ */
+
+/* الأنماط العامة للفوتر */
+.new-footer {
+    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(3, 131, 135, 0.1), rgba(15, 23, 42, 0.95));
+    color: var(--text-color);
+    padding: 60px 0 20px;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.new-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(3, 131, 135, 0.1) 0%, transparent 70%);
+    z-index: 0;
+}
+
+.footer-content {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 40px;
+}
+
+/* العلامة التجارية في الفوتر */
+.footer-brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.footer-logo {
+    width: 50px;
+    height: 50px;
+    margin-left: 15px;
+    filter: drop-shadow(0 0 5px rgba(3, 131, 135, 0.5));
+}
+
+.footer-brand-name {
+    font-family: 'Cairo', 'Almarai', sans-serif;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    margin: 0;
+    text-shadow: 0 0 10px rgba(3, 131, 135, 0.3);
+}
+
+.footer-description {
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    opacity: 0.9;
+}
+
+/* وسائل التواصل الاجتماعي */
+.footer-social {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(3, 131, 135, 0.1);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(3, 131, 135, 0.3);
+}
+
+/* عناوين الأقسام */
+.footer-title {
+    font-family: 'Cairo', 'Almarai', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+    color: var(--text-color);
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+}
+
+/* الروابط في الفوتر */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+    padding-right: 15px;
+}
+
+.footer-links a::before {
+    content: '\f104';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-light);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--primary-light);
+    transform: translateX(-5px);
+}
+
+.footer-links a:hover::before {
+    opacity: 1;
+    transform: translate(-5px, -50%);
+}
+
+/* معلومات الاتصال */
+.footer-contact {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px;
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    font-size: 0.95rem;
+}
+
+.footer-contact li i {
+    margin-left: 15px;
+    color: var(--primary-light);
+    font-size: 1.1rem;
+    margin-top: 3px;
+}
+
+/* النشرة الإخبارية - تم إزالتها */
+
+/* الجزء السفلي من الفوتر */
+.footer-bottom {
+    position: relative;
+    z-index: 1;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.copyright {
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-bottom-links a {
+    font-family: 'Almarai', 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: var(--primary-light);
+    opacity: 1;
+}
+
+/* تأثيرات الإضاءة */
+.new-footer .glow-effect {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(3, 131, 135, 0.2), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 8s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    100% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* تصميم متجاوب */
+@media (max-width: 992px) {
+    .new-footer {
+        padding: 50px 0 20px;
+    }
+
+    .footer-title {
+        margin-top: 30px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .footer-bottom-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-brand {
+        justify-content: center;
+    }
+
+    .footer-description {
+        text-align: center;
+    }
+
+    .footer-social {
+        justify-content: center;
+    }
+
+    .footer-title {
+        text-align: center;
+    }
+
+    .footer-title::after {
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    .footer-links a {
+        display: block;
+        text-align: center;
+    }
+
+    .footer-contact li {
+        justify-content: center;
+    }
+}

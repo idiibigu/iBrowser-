@@ -1,0 +1,81 @@
+/*
+ * تنسيقات الويدجيت
+ * تحتوي على التنسيقات الخاصة بالويدجيت المضافة عبر ملف widgets.js
+ */
+
+/* تنسيقات عامة للويدجيت */
+.idiibi-widget {
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--card-bg);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* تنسيقات ويدجيت الإحصائيات */
+.idiibi-stats-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.idiibi-stats-widget .stats-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.idiibi-stats-widget .stats-content {
+    width: 100%;
+}
+
+/* تنسيقات ويدجيت الإعلانات */
+.idiibi-ad-widget {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.idiibi-ad-widget img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* تنسيقات ويدجيت مخصص */
+.idiibi-custom-widget {
+    position: relative;
+}
+
+/* تنسيقات للويدجيت في الهيدر */
+.new-header .idiibi-widget {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/* تنسيقات للويدجيت في الفوتر */
+.new-footer .idiibi-widget {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* تنسيقات للويدجيت في الشريط الجانبي */
+.sidebar .idiibi-widget {
+    margin-bottom: 20px;
+}
+
+/* تنسيقات للويدجيت في الجوال */
+@media (max-width: 768px) {
+    .idiibi-widget {
+        padding: 10px;
+    }
+    
+    .idiibi-stats-widget .stats-title {
+        font-size: 1rem;
+    }
+}

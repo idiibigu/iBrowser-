@@ -1,0 +1,284 @@
+/*
+ * تنسيق قسم العملاء بخلفية داكنة - تصميم محسن
+ */
+
+.clients-section {
+    background: linear-gradient(135deg, #0f172a 0%, #111827 50%, #0f172a 100%);
+    padding: 80px 0;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.clients-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/pattern-bg.svg');
+    background-size: cover;
+    opacity: 0.03;
+    z-index: 0;
+}
+
+.clients-section .section-header {
+    position: relative;
+    z-index: 1;
+}
+
+.clients-section .section-title {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 25px;
+}
+
+.clients-section .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 3px;
+    box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.5);
+}
+
+.clients-logos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+    margin: 50px auto 40px;
+    width: 100%;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+}
+
+.client-logo {
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 34, 52, 0.7);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+    min-height: 150px;
+}
+
+.client-logo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(var(--primary-rgb), 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.client-logo:hover::after {
+    opacity: 1;
+}
+
+.client-logo a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    position: relative;
+    z-index: 2;
+}
+
+.client-logo img {
+    max-width: 100%;
+    max-height: 70%;
+    object-fit: contain;
+    transition: all 0.5s ease;
+    filter: grayscale(80%) brightness(0.95);
+    margin-bottom: 15px;
+}
+
+.client-name {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.client-name::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.client-logo:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+    border-color: rgba(var(--primary-rgb), 0.3);
+    background: rgba(26, 34, 52, 0.9);
+}
+
+.client-logo:hover img {
+    transform: scale(1.1);
+    filter: grayscale(0%) brightness(1.1);
+}
+
+.client-logo:hover .client-name {
+    color: var(--primary-color);
+}
+
+.client-logo:hover .client-name::after {
+    width: 70%;
+    opacity: 1;
+}
+
+.clients-section .btn-outline-primary {
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    margin-top: 40px;
+    padding: 12px 30px;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    background: transparent;
+}
+
+.clients-section .btn-outline-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    z-index: -1;
+    transition: all 0.4s ease;
+    opacity: 0;
+}
+
+.clients-section .btn-outline-primary:hover {
+    color: #fff;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(var(--primary-rgb), 0.4);
+    border-color: transparent;
+}
+
+.clients-section .btn-outline-primary:hover::before {
+    opacity: 1;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 992px) {
+    .clients-logos {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 20px;
+    }
+
+    .clients-section {
+        padding: 70px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .clients-logos {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 15px;
+    }
+
+    .client-name {
+        font-size: 13px;
+    }
+
+    .clients-section {
+        padding: 50px 0;
+    }
+
+    .client-logo {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .clients-logos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .client-logo {
+        padding: 12px;
+        min-height: 130px;
+    }
+
+    .client-name {
+        font-size: 12px;
+        margin-top: 8px;
+    }
+
+    .client-logo img {
+        max-height: 60%;
+    }
+
+    .clients-section .section-title {
+        font-size: 24px;
+    }
+
+    .clients-section .section-description {
+        font-size: 14px;
+    }
+
+    .clients-section .btn-outline-primary {
+        padding: 10px 25px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .clients-logos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .client-logo {
+        padding: 10px;
+        min-height: 120px;
+    }
+
+    .client-name {
+        font-size: 11px;
+        margin-top: 6px;
+    }
+
+    .client-logo img {
+        max-height: 55%;
+    }
+}

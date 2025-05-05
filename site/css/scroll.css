@@ -1,0 +1,98 @@
+/* Arabic Font */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap');
+/**
+ * أنماط التمرير الموحدة
+ */
+
+/* شريط التمرير الرئيسي */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+.scroll-progress-indicator {
+    height: 100%;
+    width: 0%;
+    background: var(--primary-color, #038387);
+    box-shadow: 0 0 10px var(--primary-color, #038387);
+    border-radius: 0 4px 4px 0;
+    transition: width 0.2s ease, background-color 0.3s ease;
+}
+
+/* تخصيص شريط التمرير */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: 10px;
+    border: 2px solid rgba(15, 23, 42, 0.8);
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+}
+
+/* تخصيص للصفحات المختلفة */
+/* صفحة Horizons */
+.horizons-page .scroll-progress-indicator,
+body.horizons-page::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #5025d1 0%, #6b40e6 100%);
+    box-shadow: 0 0 10px #5025d1;
+}
+
+/* صفحة WordPress */
+body:has(.wordpress-hero-section) .scroll-progress-indicator,
+body:has(.wordpress-hero-section)::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #21759b 0%, #2ea2cc 100%);
+    box-shadow: 0 0 10px #21759b;
+}
+
+/* صفحة Google Workspace */
+body:has(.google-workspace-hero-section) .scroll-progress-indicator,
+body:has(.google-workspace-hero-section)::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #4285F4 0%, #5a95f5 100%);
+    box-shadow: 0 0 10px #4285F4;
+}
+
+/* تخصيص للوضع الفاتح */
+[data-bs-theme="light"]::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.8);
+}
+
+[data-bs-theme="light"]::-webkit-scrollbar-thumb {
+    border: 2px solid rgba(240, 240, 240, 0.8);
+}
+
+[data-bs-theme="light"] .scroll-progress-indicator {
+    box-shadow: 0 0 10px rgba(3, 131, 135, 0.7);
+}
+
+/* تخصيص للأجهزة المحمولة */
+@media (max-width: 767px) {
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        border-width: 1px;
+    }
+}

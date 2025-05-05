@@ -1,0 +1,578 @@
+/* AnyDesk Support Page Styles */
+:root {
+    --anydesk-red: #ef443b;
+    --anydesk-dark-red: #d13931;
+    --anydesk-light-red: #ff5a52;
+    --anydesk-gray: #333333;
+    --anydesk-light-gray: #f5f5f5;
+    --anydesk-dark-gray: #222222;
+}
+
+.anydesk-support-section {
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.anydesk-support-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(239, 68, 59, 0.1), transparent 70%);
+    z-index: -1;
+}
+
+.anydesk-header {
+    background-color: rgba(239, 68, 59, 0.9) !important;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.anydesk-header .brand-container .brand-text,
+.anydesk-header .nav-link,
+.anydesk-header .cta-button,
+.anydesk-header .lang-switch {
+    color: white !important;
+}
+
+.anydesk-header .nav-link:hover,
+.anydesk-header .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+.anydesk-header .nav-link::after {
+    background-color: white !important;
+}
+
+.anydesk-header .mobile-toggle .bar {
+    background-color: white !important;
+}
+
+.anydesk-header .cta-button {
+    border-color: white !important;
+}
+
+.anydesk-header .cta-button:hover {
+    background-color: white !important;
+    color: var(--anydesk-red) !important;
+}
+
+.anydesk-footer {
+    background-color: var(--anydesk-gray) !important;
+    border-top: 3px solid var(--anydesk-red);
+}
+
+.anydesk-footer .footer-title,
+.anydesk-footer .footer-brand-name {
+    color: white !important;
+}
+
+.anydesk-footer .footer-links a:hover,
+.anydesk-footer .footer-contact a:hover {
+    color: var(--anydesk-light-red) !important;
+}
+
+.anydesk-footer .social-link:hover {
+    background-color: var(--anydesk-red) !important;
+    border-color: var(--anydesk-red) !important;
+}
+
+.anydesk-support-card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 30px;
+    height: 100%;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.anydesk-support-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(239, 68, 59, 0.2);
+    border-color: var(--anydesk-red);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anydesk-support-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.anydesk-logo {
+    max-width: 200px;
+    margin-bottom: 20px;
+}
+
+.anydesk-title {
+    color: var(--anydesk-red);
+    font-weight: 700;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.anydesk-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--anydesk-red);
+    border-radius: 3px;
+}
+
+[dir="rtl"] .anydesk-title::after {
+    left: auto;
+    right: 0;
+}
+
+.anydesk-description {
+    margin-bottom: 25px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.anydesk-steps {
+    margin-bottom: 30px;
+}
+
+.anydesk-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: fadeInRight 0.5s ease-out forwards;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.anydesk-step:nth-child(1) { animation-delay: 0.3s; }
+.anydesk-step:nth-child(2) { animation-delay: 0.5s; }
+.anydesk-step:nth-child(3) { animation-delay: 0.7s; }
+.anydesk-step:nth-child(4) { animation-delay: 0.9s; }
+
+.anydesk-step-number {
+    width: 36px;
+    height: 36px;
+    background-color: var(--anydesk-red);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+[dir="rtl"] .anydesk-step-number {
+    margin-right: 0;
+    margin-left: 15px;
+}
+
+.anydesk-step-content {
+    flex: 1;
+}
+
+.anydesk-step-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.anydesk-step-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.anydesk-form-container {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.anydesk-form .form-group {
+    margin-bottom: 20px;
+}
+
+.anydesk-form label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--text-color);
+}
+
+.anydesk-form .form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.anydesk-form .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--anydesk-red);
+    box-shadow: 0 0 0 3px rgba(239, 68, 59, 0.2);
+}
+
+.anydesk-form .btn-primary {
+    background-color: var(--anydesk-red);
+    border: none;
+    padding: 12px 25px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.anydesk-form .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+    z-index: -1;
+}
+
+.anydesk-form .btn-primary:hover {
+    background-color: var(--anydesk-dark-red);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239, 68, 59, 0.4);
+}
+
+.anydesk-form .btn-primary:hover::before {
+    left: 100%;
+}
+
+.anydesk-features {
+    margin-top: 40px;
+}
+
+.anydesk-feature {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: featureFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes featureFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anydesk-feature:nth-child(2) { animation-delay: 0.2s; }
+.anydesk-feature:nth-child(3) { animation-delay: 0.4s; }
+.anydesk-feature:nth-child(4) { animation-delay: 0.6s; }
+
+.anydesk-feature-icon {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(239, 68, 59, 0.1);
+    color: var(--anydesk-red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 15px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.anydesk-feature:hover .anydesk-feature-icon {
+    transform: scale(1.1);
+    background-color: rgba(239, 68, 59, 0.2);
+    box-shadow: 0 0 15px rgba(239, 68, 59, 0.3);
+}
+
+.anydesk-feature-icon::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(239, 68, 59, 0.3) 0%, rgba(239, 68, 59, 0) 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+}
+
+.anydesk-feature:hover .anydesk-feature-icon::after {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+[dir="rtl"] .anydesk-feature-icon {
+    margin-right: 0;
+    margin-left: 15px;
+}
+
+.anydesk-feature-content {
+    flex: 1;
+}
+
+.anydesk-feature-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.anydesk-feature-description {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.anydesk-image {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.anydesk-cta-section {
+    padding: 80px 0;
+    background-color: var(--anydesk-gray);
+    position: relative;
+    overflow: hidden;
+    margin: 60px 0;
+    border-radius: 16px;
+    animation: pulseBorder 3s infinite alternate;
+}
+
+@keyframes pulseBorder {
+    from {
+        box-shadow: 0 0 0 rgba(239, 68, 59, 0.4);
+    }
+    to {
+        box-shadow: 0 0 30px rgba(239, 68, 59, 0.7);
+    }
+}
+
+.anydesk-cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(239, 68, 59, 0.3), transparent 70%);
+    z-index: 0;
+    animation: gradientShift 10s infinite alternate;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.anydesk-cta-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.anydesk-cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.anydesk-cta-description {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.anydesk-cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.anydesk-cta-buttons .btn {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transform: translateY(30px);
+    opacity: 0;
+    animation: buttonFadeIn 0.6s forwards;
+    animation-delay: 0.8s;
+}
+
+@keyframes buttonFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.anydesk-cta-buttons .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.5s ease;
+    z-index: -1;
+}
+
+.anydesk-cta-buttons .btn:hover::before {
+    left: 100%;
+}
+
+.anydesk-cta-buttons .btn-primary {
+    background-color: var(--anydesk-red);
+    border-color: var(--anydesk-red);
+    color: white;
+}
+
+.anydesk-cta-buttons .btn-primary:hover {
+    background-color: var(--anydesk-dark-red);
+    border-color: var(--anydesk-dark-red);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(239, 68, 59, 0.4);
+}
+
+.anydesk-cta-buttons .btn-outline-light:hover {
+    background-color: white;
+    color: var(--anydesk-red);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+}
+
+.anydesk-cta-buttons .btn:nth-child(2) {
+    animation-delay: 1s;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .anydesk-support-section {
+        padding: 60px 0;
+    }
+
+    .anydesk-logo {
+        max-width: 150px;
+    }
+
+    .anydesk-title {
+        font-size: 1.8rem;
+    }
+
+    .anydesk-cta-title {
+        font-size: 2rem;
+    }
+
+    .anydesk-cta-description {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .anydesk-support-section {
+        padding: 40px 0;
+    }
+
+    .anydesk-title {
+        font-size: 1.5rem;
+    }
+
+    .anydesk-cta-title {
+        font-size: 1.8rem;
+    }
+
+    .anydesk-cta-description {
+        font-size: 1rem;
+    }
+
+    .anydesk-step {
+        flex-direction: column;
+    }
+
+    .anydesk-step-number {
+        margin-bottom: 10px;
+    }
+
+    [dir="rtl"] .anydesk-step-number {
+        margin-left: 0;
+    }
+}

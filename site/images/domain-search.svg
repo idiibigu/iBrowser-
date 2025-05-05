@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#038387;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#038387;stop-opacity:0.2" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0.2" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Elements -->
+  <rect x="50" y="50" width="500" height="300" rx="20" ry="20" fill="#1e293b" opacity="0.7" />
+  
+  <!-- Domain Search Box -->
+  <rect x="150" y="150" width="300" height="60" rx="30" ry="30" fill="#FFFFFF" opacity="0.9" />
+  <rect x="400" y="150" width="50" height="60" rx="0" ry="30" fill="#038387" opacity="0.9" />
+  <circle cx="425" cy="180" r="15" fill="none" stroke="#FFFFFF" stroke-width="2" />
+  <line x1="435" y1="190" x2="445" y2="200" stroke="#FFFFFF" stroke-width="2" />
+  
+  <!-- Domain Extensions -->
+  <rect x="150" y="230" width="60" height="30" rx="15" ry="15" fill="url(#grad1)" opacity="0.8" />
+  <text x="180" y="250" font-family="Arial" font-size="14" text-anchor="middle" fill="#FFFFFF">.com</text>
+  
+  <rect x="220" y="230" width="60" height="30" rx="15" ry="15" fill="url(#grad2)" opacity="0.8" />
+  <text x="250" y="250" font-family="Arial" font-size="14" text-anchor="middle" fill="#FFFFFF">.net</text>
+  
+  <rect x="290" y="230" width="60" height="30" rx="15" ry="15" fill="url(#grad1)" opacity="0.8" />
+  <text x="320" y="250" font-family="Arial" font-size="14" text-anchor="middle" fill="#FFFFFF">.org</text>
+  
+  <rect x="360" y="230" width="60" height="30" rx="15" ry="15" fill="url(#grad2)" opacity="0.8" />
+  <text x="390" y="250" font-family="Arial" font-size="14" text-anchor="middle" fill="#FFFFFF">.io</text>
+  
+  <!-- Globe Element -->
+  <circle cx="150" cy="120" r="50" fill="url(#grad2)" opacity="0.4" />
+  <ellipse cx="150" cy="120" rx="50" ry="20" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" />
+  <ellipse cx="150" cy="120" rx="30" ry="48" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" transform="rotate(30,150,120)" />
+  <ellipse cx="150" cy="120" rx="30" ry="48" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" transform="rotate(-30,150,120)" />
+  <ellipse cx="150" cy="120" rx="30" ry="48" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.6" transform="rotate(90,150,120)" />
+  
+  <!-- Server/DNS Elements -->
+  <rect x="450" y="100" width="60" height="80" rx="5" ry="5" fill="#464342" opacity="0.8" />
+  <rect x="460" y="110" width="40" height="5" fill="#FFFFFF" opacity="0.6" />
+  <rect x="460" y="120" width="40" height="5" fill="#FFFFFF" opacity="0.6" />
+  <rect x="460" y="130" width="40" height="5" fill="#FFFFFF" opacity="0.6" />
+  <rect x="460" y="150" width="40" height="20" rx="3" ry="3" fill="#038387" opacity="0.8" />
+  
+  <!-- Connection Lines -->
+  <path d="M200,120 C250,100 350,100 400,120" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="5,5" opacity="0.6" />
+  <path d="M200,180 C250,200 350,200 400,180" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="5,5" opacity="0.6" />
+  <line x1="450" y1="140" x2="400" y2="140" stroke="#FFFFFF" stroke-width="1" stroke-dasharray="5,5" opacity="0.6" />
+</svg>
