@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق من التحديثات - iBrowser</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div class="page-logo">
+                <img src="../assets/logo/worksuite-logo.png" alt="iBrowser Logo">
+                <h1>iBrowser</h1>
+            </div>
+            <button type="button" id="close-page" class="close-button"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="page-content">
+            <h2>التحقق من التحديثات</h2>
+
+            <div class="update-container">
+                <div class="current-version">
+                    <h3>الإصدار الحالي</h3>
+                    <div class="version-info">
+                        <span class="version-number">1.0.2</span>
+                        <span class="version-date">تاريخ الإصدار: 5 مايو 2025</span>
+                    </div>
+                </div>
+
+                <div class="update-status" id="update-status">
+                    <div class="checking-updates">
+                        <i class="fas fa-sync-alt fa-spin"></i>
+                        <p>جاري التحقق من وجود تحديثات...</p>
+                    </div>
+                </div>
+
+                <div class="update-actions">
+                    <button type="button" id="check-updates-btn" class="primary-button">
+                        <i class="fas fa-sync-alt"></i>
+                        التحقق من التحديثات
+                    </button>
+                </div>
+
+                <div class="update-history">
+                    <h3>سجل التحديثات</h3>
+
+                    <div class="update-entry">
+                        <div class="update-entry-header">
+                            <span class="update-version">الإصدار 1.0.2</span>
+                            <span class="update-date">5 مايو 2025</span>
+                        </div>
+                        <div class="update-entry-content">
+                            <h4>تحسينات وإصلاحات</h4>
+                            <ul>
+                                <li>تحسين نظام التحديثات التلقائية</li>
+                                <li>إصلاح مشكلة في عرض القوائم المنسدلة</li>
+                                <li>إضافة دعم للتحديثات التلقائية عبر GitHub Releases</li>
+                                <li>تحسين نظام التنبيهات والإشعارات</li>
+                                <li>إصلاح مشكلة في حفظ الإعدادات</li>
+                                <li>إضافة خيارات تخصيص إضافية</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="update-entry">
+                        <div class="update-entry-header">
+                            <span class="update-version">الإصدار 1.0.1</span>
+                            <span class="update-date">5 مايو 2025</span>
+                        </div>
+                        <div class="update-entry-content">
+                            <h4>الإصدار الأولي</h4>
+                            <ul>
+                                <li>إطلاق النسخة الأولى من متصفح iBrowser</li>
+                                <li>دعم التبويبات المتعددة</li>
+                                <li>إدارة المفضلة وسجل التصفح</li>
+                                <li>دعم وضع توفير البيانات</li>
+                                <li>عرض التاريخ الهجري والميلادي</li>
+                                <li>أزرار الوصول السريع للمواقع الشائعة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('close-page').addEventListener('click', () => {
+            window.close();
+        });
+
+        // التحقق من التحديثات
+        document.getElementById('check-updates-btn').addEventListener('click', () => {
+            const updateStatus = document.getElementById('update-status');
+
+            // عرض حالة التحقق
+            updateStatus.innerHTML = `
+                <div class="checking-updates">
+                    <i class="fas fa-sync-alt fa-spin"></i>
+                    <p>جاري التحقق من وجود تحديثات...</p>
+                </div>
+            `;
+
+            // إرسال طلب التحقق من التحديثات إلى العملية الرئيسية
+            window.api.send('check-for-updates');
+        });
+
+        // استماع لحالة التحديث من العملية الرئيسية
+        window.api.receive('update-status', (data) => {
+            const updateStatus = document.getElementById('update-status');
+
+            switch (data.status) {
+                case 'checking':
+                    updateStatus.innerHTML = `
+                        <div class="checking-updates">
+                            <i class="fas fa-sync-alt fa-spin"></i>
+                            <p>جاري التحقق من وجود تحديثات...</p>
+                        </div>
+                    `;
+                    break;
+
+                case 'available':
+                    // تنسيق ملاحظات الإصدار إذا كانت موجودة
+                    let releaseNotes = '';
+                    if (data.info.releaseNotes) {
+                        if (typeof data.info.releaseNotes === 'string') {
+                            // إذا كانت ملاحظات الإصدار نصًا
+                            releaseNotes = `<p class="release-notes">${data.info.releaseNotes}</p>`;
+                        } else if (Array.isArray(data.info.releaseNotes)) {
+                            // إذا كانت ملاحظات الإصدار مصفوفة
+                            releaseNotes = `
+                                <ul class="release-notes">
+                                    ${data.info.releaseNotes.map(note => `<li>${note}</li>`).join('')}
+                                </ul>
+                            `;
+                        }
+                    }
+
+                    updateStatus.innerHTML = `
+                        <div class="update-available">
+                            <i class="fas fa-arrow-circle-up"></i>
+                            <p>يوجد تحديث جديد: الإصدار ${data.info.version}</p>
+                            <p>تاريخ الإصدار: ${new Date(data.info.releaseDate).toLocaleDateString('ar-SA')}</p>
+                            ${releaseNotes}
+                            <button id="download-update-btn" class="primary-button">
+                                <i class="fas fa-download"></i>
+                                تنزيل التحديث
+                            </button>
+                            <div id="download-progress" class="progress-bar" style="display: none;">
+                                <div class="progress-fill" style="width: 0%"></div>
+                                <span class="progress-text">0%</span>
+                            </div>
+                        </div>
+                    `;
+
+                    // إضافة مستمع حدث لزر التنزيل
+                    document.getElementById('download-update-btn').addEventListener('click', () => {
+                        window.api.send('download-update');
+                        document.getElementById('download-progress').style.display = 'block';
+                    });
+                    break;
+
+                case 'not-available':
+                    updateStatus.innerHTML = `
+                        <div class="up-to-date">
+                            <i class="fas fa-check-circle"></i>
+                            <p>أنت تستخدم أحدث إصدار من iBrowser!</p>
+                            <span class="last-checked">آخر تحقق: ${new Date().toLocaleString('ar-SA')}</span>
+                        </div>
+                    `;
+                    break;
+
+                case 'downloading':
+                    const progressBar = document.querySelector('.progress-fill');
+                    const progressText = document.querySelector('.progress-text');
+
+                    if (progressBar && progressText) {
+                        const percent = Math.round(data.progress.percent);
+                        progressBar.style.width = `${percent}%`;
+                        progressText.textContent = `${percent}%`;
+                    }
+                    break;
+
+                case 'downloaded':
+                    updateStatus.innerHTML = `
+                        <div class="update-downloaded">
+                            <i class="fas fa-check"></i>
+                            <p>تم تنزيل التحديث بنجاح!</p>
+                            <button id="install-update-btn" class="primary-button">
+                                <i class="fas fa-arrow-circle-up"></i>
+                                تثبيت التحديث وإعادة تشغيل التطبيق
+                            </button>
+                        </div>
+                    `;
+
+                    // إضافة مستمع حدث لزر التثبيت
+                    document.getElementById('install-update-btn').addEventListener('click', () => {
+                        window.api.send('install-update');
+                    });
+                    break;
+
+                case 'error':
+                    updateStatus.innerHTML = `
+                        <div class="update-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>حدث خطأ أثناء التحقق من التحديثات</p>
+                            <p class="error-message">${data.error}</p>
+                            <button id="retry-update-btn" class="primary-button">
+                                <i class="fas fa-sync-alt"></i>
+                                إعادة المحاولة
+                            </button>
+                        </div>
+                    `;
+
+                    // إضافة مستمع حدث لزر إعادة المحاولة
+                    document.getElementById('retry-update-btn').addEventListener('click', () => {
+                        document.getElementById('check-updates-btn').click();
+                    });
+                    break;
+            }
+        });
+
+        // التحقق تلقائيًا من التحديثات عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('check-updates-btn').click();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
