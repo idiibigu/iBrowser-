@@ -1,6 +1,7 @@
 # iBrowser
 
 متصفح سطح المكتب المتكامل من شركة إديبي.
+![image](https://github.com/user-attachments/assets/6294ddd4-ff5a-41a2-be3c-6e15fc48042c)
 
 ## الميزات
 
