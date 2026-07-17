@@ -25,23 +25,26 @@
                     <img src="../assets/logo/worksuite-logo.png" alt="iBrowser Logo" class="about-logo">
                     <div class="about-title">
                         <h2>iBrowser</h2>
-                        <p class="version">الإصدار 1.0.5</p>
+                        <p class="version">الإصدار <span id="about-version">2.0.0</span> · مفتوح المصدر</p>
                     </div>
                 </div>
 
                 <div class="about-description">
-                    <p>iBrowser هو متصفح ويب متكامل مصمم لتوفير تجربة تصفح سريعة وآمنة. يتميز بواجهة مستخدم سهلة الاستخدام ومجموعة من الميزات المفيدة.</p>
+                    <p>iBrowser هو متصفح ويب متكامل ومفتوح المصدر من شركة إديبي، يجمع أدوات التصفح اليومية مع الوصول
+                    المباشر لعدة مساعدات ذكاء اصطناعي، ونظام إعدادات متكامل، ويدعم الإضافات (الموديولات) الخارجية.</p>
                 </div>
 
                 <div class="about-features">
                     <h3>الميزات الرئيسية</h3>
                     <ul>
                         <li><i class="fas fa-check"></i> دعم التبويبات المتعددة</li>
+                        <li><i class="fas fa-check"></i> لوحة ذكاء اصطناعي جانبية (ChatGPT وClaude وGemini وغيرها)</li>
+                        <li><i class="fas fa-check"></i> إعدادات متكاملة داخل التطبيق</li>
+                        <li><i class="fas fa-check"></i> نظام إضافات/موديولات مفتوح قابل للتوسعة</li>
                         <li><i class="fas fa-check"></i> إدارة المفضلة وسجل التصفح</li>
                         <li><i class="fas fa-check"></i> وضع توفير البيانات</li>
                         <li><i class="fas fa-check"></i> عرض التاريخ الهجري والميلادي</li>
                         <li><i class="fas fa-check"></i> أزرار الوصول السريع للمواقع الشائعة</li>
-                        <li><i class="fas fa-check"></i> واجهة مستخدم سهلة الاستخدام</li>
                     </ul>
                 </div>
 
@@ -77,14 +80,22 @@
                 </div>
 
                 <div class="about-links">
-                    <a href="https://idiibi.com" target="_blank" class="about-link">
+                    <button type="button" class="about-link" data-url="https://idiibi.com">
                         <i class="fas fa-globe"></i>
                         الموقع الرسمي
-                    </a>
-                    <a href="https://pms.idiibi.com" target="_blank" class="about-link">
+                    </button>
+                    <button type="button" class="about-link" data-url="https://pms.idiibi.com">
                         <i class="fas fa-tasks"></i>
                         نظام إدارة المشاريع
-                    </a>
+                    </button>
+                    <button type="button" class="about-link" data-url="https://github.com/idiibigu/iBrowser-">
+                        <i class="fab fa-github"></i>
+                        الكود المصدري (GitHub)
+                    </button>
+                    <button type="button" class="about-link" data-url="https://github.com/idiibigu/iBrowser-/blob/master/PLUGINS.md">
+                        <i class="fas fa-puzzle-piece"></i>
+                        دليل الإضافات للمطورين
+                    </button>
                     <a href="mailto:support@idiibi.com" class="about-link">
                         <i class="fas fa-envelope"></i>
                         الدعم الفني
@@ -98,6 +109,16 @@
         document.getElementById('close-page').addEventListener('click', () => {
             window.close();
         });
+
+        document.querySelectorAll('.about-link[data-url]').forEach((el) => {
+            el.addEventListener('click', () => {
+                window.ibrowser.app.openExternal(el.dataset.url);
+            });
+        });
+
+        window.ibrowser.app.getVersion().then((version) => {
+            document.getElementById('about-version').textContent = version;
+        }).catch(() => {});
     </script>
 </body>
 </html>

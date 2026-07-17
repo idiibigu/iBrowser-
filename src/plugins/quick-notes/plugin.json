@@ -1,0 +1,9 @@
+{
+  "id": "quick-notes",
+  "name": "ملاحظات سريعة",
+  "version": "1.0.0",
+  "description": "دوّن ملاحظة سريعة أثناء التصفح، تُحفظ محليًا وتظهر عند فتحها لاحقًا.",
+  "author": "idiibi",
+  "icon": "fa-note-sticky",
+  "main": "index.js"
+}

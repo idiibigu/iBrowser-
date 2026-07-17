@@ -1,108 +1,15 @@
-const { app, BrowserWindow, session, ipcMain, Menu, dialog } = require('electron');
+const { app, BrowserWindow, session, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
-// Mock autoUpdater for testing
-const autoUpdater = {
-  autoDownload: false,
-  autoInstallOnAppQuit: true,
-  on: (event, callback) => {
-    // تخزين معالجات الأحداث
-    if (!autoUpdater.eventHandlers) {
-      autoUpdater.eventHandlers = {};
-    }
-    autoUpdater.eventHandlers[event] = callback;
-  },
-  checkForUpdates: () => {
-    console.log('التحقق من التحديثات...');
 
-    // محاكاة التحقق من التحديثات
-    if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['checking-for-update']) {
-      autoUpdater.eventHandlers['checking-for-update']();
-    }
-
-    // محاكاة عملية التحقق من التحديثات
-    setTimeout(() => {
-      // قراءة الإصدار الحالي من package.json
-      const currentVersion = app.getVersion();
-      console.log('الإصدار الحالي:', currentVersion);
-
-      // محاكاة وجود تحديث جديد (للاختبار)
-      const randomChoice = Math.random();
-
-      if (randomChoice > 0.5) {
-        // محاكاة وجود تحديث جديد
-        if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-available']) {
-          autoUpdater.eventHandlers['update-available']({
-            version: '1.0.6',
-            releaseDate: new Date().toISOString(),
-            releaseNotes: [
-              'تحسين أداء التطبيق بشكل كبير',
-              'إضافة ميزة الترجمة الفورية للصفحات',
-              'إضافة وضع القراءة المحسن',
-              'تحسين نظام إدارة التبويبات',
-              'إصلاح مشاكل متعددة في واجهة المستخدم'
-            ]
-          });
-        }
-      } else {
-        // محاكاة عدم وجود تحديثات
-        if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-not-available']) {
-          autoUpdater.eventHandlers['update-not-available']({
-            version: currentVersion,
-            releaseDate: new Date().toISOString()
-          });
-        }
-      }
-    }, 2000);
-
-    return Promise.resolve();
-  },
-  downloadUpdate: () => {
-    console.log('تنزيل التحديث...');
-
-    // محاكاة تقدم التنزيل
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-
-      if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['download-progress']) {
-        autoUpdater.eventHandlers['download-progress']({
-          percent: progress,
-          bytesPerSecond: 1000000,
-          total: 10000000,
-          transferred: progress * 100000
-        });
-      }
-
-      if (progress >= 100) {
-        clearInterval(interval);
-
-        if (autoUpdater.eventHandlers && autoUpdater.eventHandlers['update-downloaded']) {
-          autoUpdater.eventHandlers['update-downloaded']({
-            version: '1.0.6',
-            releaseDate: new Date().toISOString(),
-            releaseNotes: [
-              'تحسين أداء التطبيق بشكل كبير',
-              'إضافة ميزة الترجمة الفورية للصفحات',
-              'إضافة وضع القراءة المحسن',
-              'تحسين نظام إدارة التبويبات',
-              'إصلاح مشاكل متعددة في واجهة المستخدم'
-            ]
-          });
-        }
-      }
-    }, 500);
-
-    return Promise.resolve();
-  },
-  quitAndInstall: () => {
-    console.log('تثبيت التحديث وإعادة تشغيل التطبيق...');
-    app.quit();
-  }
-};
+const { SettingsStore, SEARCH_ENGINES } = require('./core/settings');
+const PluginManager = require('./core/plugin-manager');
+const updater = require('./core/updater');
 
 // Keep a global reference of the window object to avoid garbage collection
 let mainWindow;
+let settings;
+let pluginManager;
 
 // User data directory for persistent storage
 const userDataPath = app.getPath('userData');
@@ -115,171 +22,71 @@ if (!fs.existsSync(sessionDataPath)) {
 
 // Create the browser window
 function createWindow() {
-  // Create the browser window
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    minWidth: 800,
+    width: 1280,
+    height: 840,
+    minWidth: 900,
     minHeight: 600,
     icon: path.join(__dirname, 'assets', 'logo', 'worksuite-logo.png'),
     webPreferences: {
       nodeIntegration: false, // For security reasons
       contextIsolation: true, // Protect against prototype pollution
-      preload: path.join(__dirname, 'preload.js'), // Use a preload script
+      preload: path.join(__dirname, 'preload.js'),
       webviewTag: true, // Enable webview tag
       partition: 'persist:main', // Persist session data
       spellcheck: true
     }
   });
 
-  // Load the index.html file
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-  // Set Chrome as the user agent to ensure compatibility
+  // Electron only allows a single onBeforeSendHeaders listener per session,
+  // so every header rule (user agent, OAuth headers, Do Not Track) is
+  // combined here instead of being registered in separate calls.
+  const oauthHosts = /\.(google|googleapis|facebook|fbcdn)\.(com|net)$/i;
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-    details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    details.requestHeaders['User-Agent'] =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+    try {
+      const host = new URL(details.url).hostname;
+      if (oauthHosts.test(host)) {
+        details.requestHeaders['Sec-Fetch-Site'] = 'cross-site';
+        details.requestHeaders['Sec-Fetch-Mode'] = 'navigate';
+      }
+    } catch (err) {
+      // Ignore malformed URLs; the default headers still apply.
+    }
+
+    if (settings.get('privacy.doNotTrack', true)) {
+      details.requestHeaders['DNT'] = '1';
+    }
+
     callback({ cancel: false, requestHeaders: details.requestHeaders });
   });
 
-  // Enable persistent cookies and storage
-  session.defaultSession.cookies.set({
-    url: 'https://pms.idiibi.com',
-    name: 'electron-app',
-    value: 'true',
-    expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60 // 1 year
-  }).then(() => {
-    console.log('Cookie set successfully');
-  }).catch(err => {
-    console.error('Failed to set cookie', err);
-  });
-
-  // Configure session for Google and Facebook login
-  session.defaultSession.webRequest.onBeforeSendHeaders({
-    urls: [
-      'https://*.google.com/*',
-      'https://*.googleapis.com/*',
-      'https://*.facebook.com/*',
-      'https://*.fbcdn.net/*'
-    ]
-  }, (details, callback) => {
-    // Add required headers for OAuth flows
-    details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-    details.requestHeaders['Sec-Fetch-Site'] = 'cross-site';
-    details.requestHeaders['Sec-Fetch-Mode'] = 'navigate';
-    callback({ cancel: false, requestHeaders: details.requestHeaders });
-  });
-
-  // Open DevTools in development mode
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
 
-  // Handle window closed event
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
-// Create application menu
+// No native/top menu bar - the app ships its own in-window menu and settings UI
 function createAppMenu() {
-  // إزالة القائمة العلوية واستخدام القائمة المنسدلة بجانب البحث بدلاً منها
   Menu.setApplicationMenu(null);
 }
 
-// تكوين التحديثات التلقائية
-function setupAutoUpdater() {
-  // تعطيل التحقق التلقائي من التحديثات عند بدء التشغيل
-  autoUpdater.autoDownload = false;
-  autoUpdater.autoInstallOnAppQuit = true;
-
-  // استماع لأحداث التحديث
-  autoUpdater.on('checking-for-update', () => {
-    console.log('جاري التحقق من وجود تحديثات...');
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'checking',
-        message: 'جاري التحقق من وجود تحديثات...'
-      });
-    }
-  });
-
-  autoUpdater.on('update-available', (info) => {
-    console.log('يوجد تحديث جديد متاح:', info);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'available',
-        info: {
-          version: info.version,
-          releaseDate: info.releaseDate,
-          releaseNotes: info.releaseNotes
-        }
-      });
-    }
-  });
-
-  autoUpdater.on('update-not-available', (info) => {
-    console.log('لا يوجد تحديث جديد:', info);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'not-available',
-        info: {
-          version: info.version,
-          releaseDate: info.releaseDate
-        }
-      });
-    }
-  });
-
-  autoUpdater.on('download-progress', (progressObj) => {
-    console.log('تقدم التنزيل:', progressObj);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'downloading',
-        progress: progressObj
-      });
-    }
-  });
-
-  autoUpdater.on('update-downloaded', (info) => {
-    console.log('تم تنزيل التحديث:', info);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'downloaded',
-        info: {
-          version: info.version,
-          releaseDate: info.releaseDate,
-          releaseNotes: info.releaseNotes
-        }
-      });
-    }
-  });
-
-  autoUpdater.on('error', (err) => {
-    console.error('خطأ في التحديث:', err);
-    if (mainWindow) {
-      mainWindow.webContents.send('update-status', {
-        status: 'error',
-        error: err.message
-      });
-    }
-  });
-}
-
-// Create window when Electron is ready
 app.whenReady().then(() => {
+  settings = new SettingsStore();
+  pluginManager = new PluginManager(settings);
+
   createWindow();
   createAppMenu();
-  setupAutoUpdater();
-  setupMenuIPCHandlers();
+  registerIpcHandlers();
 
-  // التحقق من التحديثات بعد 3 ثوانٍ من بدء التشغيل
-  setTimeout(() => {
-    autoUpdater.checkForUpdates().catch(err => {
-      console.error('خطأ في التحقق من التحديثات:', err);
-    });
-  }, 3000);
-
-  // On macOS, re-create window when dock icon is clicked
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -287,165 +94,89 @@ app.whenReady().then(() => {
   });
 });
 
-// Quit when all windows are closed, except on macOS
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-// IPC handlers for communication with renderer process
-ipcMain.handle('get-app-path', () => {
-  return app.getAppPath();
-});
+function registerIpcHandlers() {
+  // ---- App info ----
+  ipcMain.handle('get-app-path', () => app.getAppPath());
+  ipcMain.handle('app:get-version', () => app.getVersion());
 
-// Get network information
-ipcMain.handle('get-network-info', async () => {
-  try {
-    // This is a simple implementation - in a real app, you might use a more sophisticated method
-    const networkInfo = {
-      downloadSpeed: Math.floor(Math.random() * 100) + 1, // Simulated download speed in Mbps
-      uploadSpeed: Math.floor(Math.random() * 20) + 1, // Simulated upload speed in Mbps
-      latency: Math.floor(Math.random() * 100) + 5, // Simulated latency in ms
-      isOnline: true
-    };
-    return networkInfo;
-  } catch (error) {
-    console.error('Error getting network info:', error);
-    return {
-      downloadSpeed: 0,
-      uploadSpeed: 0,
-      latency: 0,
-      isOnline: false
-    };
-  }
-});
+  // ---- Settings ----
+  ipcMain.handle('settings:get-all', () => settings.getAll());
+  ipcMain.handle('settings:get', (_, keyPath, fallback) => settings.get(keyPath, fallback));
+  ipcMain.handle('settings:set', (_, keyPath, value) => settings.set(keyPath, value));
+  ipcMain.handle('settings:search-engines', () => SEARCH_ENGINES);
 
-// Handle data saver mode updates from renderer
-ipcMain.on('update-data-saver-menu', (_, enabled) => {
-  // تحديث حالة وضع توفير البيانات في القائمة العلوية
-  const menu = Menu.getApplicationMenu();
-  if (menu) {
-    // البحث عن عنصر القائمة وضع توفير البيانات
-    const toolsMenu = menu.items.find(item => item.label === 'أدوات');
-    if (toolsMenu && toolsMenu.submenu) {
-      const internetSettingsItem = toolsMenu.submenu.items.find(item => item.label === 'إعدادات الإنترنت');
-      if (internetSettingsItem && internetSettingsItem.submenu) {
-        const dataSaverItem = internetSettingsItem.submenu.items.find(item => item.label === 'وضع توفير البيانات');
-        if (dataSaverItem) {
-          dataSaverItem.checked = enabled;
-        }
-      }
+  // ---- Plugins / extensions ----
+  ipcMain.handle('plugins:list', () => pluginManager.list());
+  ipcMain.handle('plugins:set-enabled', (_, id, enabled) => pluginManager.setEnabled(id, enabled));
+  ipcMain.handle('plugins:get-source', (_, id) => pluginManager.readSource(id));
+  ipcMain.handle('plugins:storage-get', (_, id, key, fallback) => pluginManager.storageGet(id, key, fallback));
+  ipcMain.handle('plugins:storage-set', (_, id, key, value) => pluginManager.storageSet(id, key, value));
+  ipcMain.on('plugins:open-folder', () => pluginManager.openUserPluginsFolder());
+
+  // ---- Updates (real GitHub Releases check, replaces the old fake updater) ----
+  ipcMain.handle('updates:check', () => updater.checkForUpdates());
+  ipcMain.on('updates:open-release', (_, url) => updater.openReleasePage(url));
+
+  // ---- External links / shell ----
+  ipcMain.on('shell:open-external', (_, url) => {
+    if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
+      shell.openExternal(url);
     }
-  }
-});
-
-// Handle navigation events from renderer
-ipcMain.on('navigate', (_, url) => {
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.send('navigate-webview', url);
-  }
-});
-
-// معالجات IPC للتحديثات
-ipcMain.on('check-for-updates', () => {
-  console.log('طلب التحقق من التحديثات من العملية الرئيسية');
-
-  // إرسال حالة التحقق من التحديثات
-  if (mainWindow) {
-    mainWindow.webContents.send('update-status', { status: 'checking' });
-  }
-
-  // التحقق من التحديثات بعد تأخير قصير لإظهار حالة التحقق
-  setTimeout(() => {
-    autoUpdater.checkForUpdates().catch(err => {
-      console.error('خطأ في التحقق من التحديثات:', err);
-      if (mainWindow) {
-        mainWindow.webContents.send('update-status', {
-          status: 'error',
-          error: err.message
-        });
-      }
-    });
-  }, 2000); // تأخير لمدة 2 ثانية لإظهار حالة التحقق
-});
-
-ipcMain.on('download-update', () => {
-  console.log('طلب تنزيل التحديث من العملية الرئيسية');
-
-  // إضافة تأخير قصير قبل بدء التنزيل لتحسين تجربة المستخدم
-  setTimeout(() => {
-    autoUpdater.downloadUpdate().catch(err => {
-      console.error('خطأ في تنزيل التحديث:', err);
-      if (mainWindow) {
-        mainWindow.webContents.send('update-status', {
-          status: 'error',
-          error: err.message
-        });
-      }
-    });
-  }, 500);
-});
-
-ipcMain.on('install-update', () => {
-  console.log('طلب تثبيت التحديث من العملية الرئيسية');
-
-  // إضافة تأخير قصير قبل التثبيت لإظهار رسالة "جاري إعادة التشغيل"
-  setTimeout(() => {
-    autoUpdater.quitAndInstall();
-  }, 1000);
-});
-
-// معالجات IPC للقائمة الجديدة
-function setupMenuIPCHandlers() {
-  // إنهاء التطبيق
-  ipcMain.on('quit-app', () => {
-    app.quit();
   });
 
-  // تبديل وضع ملء الشاشة
+  // ---- Navigation from menu/plugins into the active tab ----
+  ipcMain.on('navigate', (_, url) => {
+    if (mainWindow && mainWindow.webContents) {
+      mainWindow.webContents.send('navigate-webview', url);
+    }
+  });
+
+  // ---- Window / app controls ----
+  ipcMain.on('quit-app', () => app.quit());
+
   ipcMain.on('toggle-fullscreen', () => {
-    if (mainWindow) {
-      mainWindow.setFullScreen(!mainWindow.isFullScreen());
-    }
+    if (mainWindow) mainWindow.setFullScreen(!mainWindow.isFullScreen());
   });
 
-  // مسح الكاش
+  // ---- Privacy / data controls ----
   ipcMain.on('clear-cache', () => {
-    if (mainWindow) {
-      session.defaultSession.clearCache().then(() => {
-        mainWindow.webContents.send('show-notification', 'تم مسح الكاش بنجاح');
-      });
-    }
+    if (!mainWindow) return;
+    session.defaultSession.clearCache().then(() => {
+      mainWindow.webContents.send('show-notification', 'تم مسح الكاش بنجاح');
+    });
   });
 
-  // مسح ملفات تعريف الارتباط
   ipcMain.on('clear-cookies', () => {
-    if (mainWindow) {
-      session.defaultSession.clearStorageData({ storages: ['cookies'] }).then(() => {
-        mainWindow.webContents.send('show-notification', 'تم مسح ملفات تعريف الارتباط بنجاح');
-      });
-    }
+    if (!mainWindow) return;
+    session.defaultSession.clearStorageData({ storages: ['cookies'] }).then(() => {
+      mainWindow.webContents.send('show-notification', 'تم مسح ملفات تعريف الارتباط بنجاح');
+    });
   });
 
-  // مسح كل البيانات
   ipcMain.on('clear-all-data', () => {
-    if (mainWindow) {
-      session.defaultSession.clearStorageData().then(() => {
-        mainWindow.webContents.send('show-notification', 'تم مسح جميع بيانات التصفح بنجاح');
-      });
-    }
+    if (!mainWindow) return;
+    session.defaultSession.clearStorageData().then(() => {
+      mainWindow.webContents.send('show-notification', 'تم مسح جميع بيانات التصفح بنجاح');
+    });
   });
 
-  // فتح صفحة في نافذة جديدة
+  // ---- Secondary windows (help/about/etc.) ----
   ipcMain.on('open-page', (_, data) => {
-    const { page } = data;
-    const pageUrl = path.join(__dirname, 'pages', page);
+    const { page } = data || {};
+    if (typeof page !== 'string' || !/^[\w-]+\.html$/.test(page)) return;
 
-    // إنشاء نافذة جديدة للصفحة
-    let pageWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
+    const pageUrl = path.join(__dirname, 'pages', page);
+    if (!fs.existsSync(pageUrl)) return;
+
+    const pageWindow = new BrowserWindow({
+      width: 820,
+      height: 640,
       icon: path.join(__dirname, 'assets', 'logo', 'worksuite-logo.png'),
       webPreferences: {
         nodeIntegration: false,
@@ -454,33 +185,15 @@ function setupMenuIPCHandlers() {
       }
     });
 
-    // تحميل الصفحة
     pageWindow.loadFile(pageUrl);
-
-    // إضافة عنوان للنافذة الجديدة
-    switch(page) {
-      case 'user-guide.html':
-        pageWindow.setTitle('دليل المستخدم - iBrowser');
-        break;
-      case 'faq.html':
-        pageWindow.setTitle('الأسئلة الشائعة - iBrowser');
-        break;
-      case 'check-updates.html':
-        pageWindow.setTitle('التحقق من التحديثات - iBrowser');
-        break;
-      case 'about.html':
-        pageWindow.setTitle('حول البرنامج - iBrowser');
-        break;
-      default:
-        pageWindow.setTitle('iBrowser');
-    }
-
-    // إزالة القائمة من النافذة
     pageWindow.setMenu(null);
 
-    // تنظيف عند إغلاق النافذة
-    pageWindow.on('closed', () => {
-      pageWindow = null;
-    });
+    const titles = {
+      'user-guide.html': 'دليل المستخدم - iBrowser',
+      'faq.html': 'الأسئلة الشائعة - iBrowser',
+      'check-updates.html': 'التحقق من التحديثات - iBrowser',
+      'about.html': 'حول البرنامج - iBrowser'
+    };
+    pageWindow.setTitle(titles[page] || 'iBrowser');
   });
 }

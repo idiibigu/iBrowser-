@@ -1,0 +1,144 @@
+/* AI side panel: browse a page and chat with an AI provider at the same time. */
+
+.ai-panel {
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--panel-bg-dark);
+    border-right: 1px solid var(--border-color);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition: width 0.25s ease;
+}
+
+.ai-panel.open {
+    width: 380px;
+    min-width: 320px;
+}
+
+@media (max-width: 992px) {
+    .ai-panel.open {
+        width: 320px;
+    }
+}
+
+.ai-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color);
+    gap: 8px;
+}
+
+.ai-panel-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+}
+
+.ai-panel-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.ai-panel-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 16px;
+    border: 1px solid transparent;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ai-panel-tab .ai-panel-tab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ai-panel-tab:hover {
+    background-color: rgba(3, 131, 135, 0.15);
+}
+
+.ai-panel-tab.active {
+    background-color: rgba(3, 131, 135, 0.25);
+    border-color: rgba(3, 131, 135, 0.5);
+}
+
+.ai-panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.ai-panel-action {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.ai-panel-action:hover {
+    background-color: rgba(3, 131, 135, 0.15);
+    color: var(--primary-light);
+}
+
+.ai-panel-body {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+}
+
+.ai-panel-body .ai-provider-view {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+}
+
+.ai-panel-body .ai-provider-view.active {
+    display: flex;
+}
+
+.ai-panel-body webview {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.ai-panel-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    padding: 20px;
+}
+
+:root[data-theme="light"] .ai-panel-empty {
+    color: rgba(15, 23, 42, 0.5);
+}
