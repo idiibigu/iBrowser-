@@ -35,14 +35,34 @@ function isPlainObject(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+// Deep-clones plain objects and arrays so the result never shares nested
+// references with `target` or `source` - important because `target` is
+// often the module-level DEFAULTS constant, and callers like getAll() rely
+// on the result being safe to hand to the renderer without risking
+// mutation of the live in-memory store (or of DEFAULTS itself).
+function cloneValue(value) {
+  if (Array.isArray(value)) return value.map(cloneValue);
+  if (isPlainObject(value)) {
+    const out = {};
+    for (const key of Object.keys(value)) out[key] = cloneValue(value[key]);
+    return out;
+  }
+  return value;
+}
+
 function deepMerge(target, source) {
-  if (!isPlainObject(source)) return target;
-  const result = { ...target };
-  for (const key of Object.keys(source)) {
-    if (isPlainObject(source[key]) && isPlainObject(target[key])) {
-      result[key] = deepMerge(target[key], source[key]);
-    } else {
-      result[key] = source[key];
+  const base = isPlainObject(target) ? target : {};
+  const result = {};
+  for (const key of Object.keys(base)) {
+    result[key] = cloneValue(base[key]);
+  }
+  if (isPlainObject(source)) {
+    for (const key of Object.keys(source)) {
+      if (isPlainObject(source[key]) && isPlainObject(base[key])) {
+        result[key] = deepMerge(base[key], source[key]);
+      } else {
+        result[key] = cloneValue(source[key]);
+      }
     }
   }
   return result;

@@ -136,7 +136,10 @@ function setAIPanelOpen(open) {
 
     panel.classList.toggle('open', open);
     panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-    if (toggleButton) toggleButton.classList.toggle('active', open);
+    if (toggleButton) {
+        toggleButton.classList.toggle('active', open);
+        toggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
 }
 
 function initAIPanel() {

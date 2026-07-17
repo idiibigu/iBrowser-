@@ -1,6 +1,6 @@
 // Integrated settings overlay: General / Appearance / Privacy / AI / Extensions / About.
-// Talks to the main process exclusively through the window.ibrowser bridge
-// exposed by preload.js (no direct Node/Electron access here).
+// Talks to the main process through the window.ibrowser and window.api
+// bridges exposed by preload.js (no direct Node/Electron access here).
 
 function resolveTheme(themeSetting) {
     if (themeSetting === 'system') {

@@ -43,7 +43,7 @@ function createWindow() {
   // Electron only allows a single onBeforeSendHeaders listener per session,
   // so every header rule (user agent, OAuth headers, Do Not Track) is
   // combined here instead of being registered in separate calls.
-  const oauthHosts = /\.(google|googleapis|facebook|fbcdn)\.(com|net)$/i;
+  const oauthHosts = /(^|\.)(google|googleapis|facebook|fbcdn)\.(com|net)$/i;
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     details.requestHeaders['User-Agent'] =
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';

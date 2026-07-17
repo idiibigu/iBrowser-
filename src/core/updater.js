@@ -92,7 +92,9 @@ async function checkForUpdates() {
 }
 
 function openReleasePage(url) {
-  shell.openExternal(url || `https://github.com/${REPO}/releases`);
+  const fallback = `https://github.com/${REPO}/releases`;
+  const target = typeof url === 'string' && /^https?:\/\//i.test(url) ? url : fallback;
+  shell.openExternal(target);
 }
 
 module.exports = { checkForUpdates, openReleasePage, REPO };
