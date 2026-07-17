@@ -4,12 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iBrowser</title>
+    <script>
+        // Apply the last-known theme immediately to avoid a flash of the wrong theme
+        // before the settings store (loaded async over IPC) responds.
+        try {
+            var cachedTheme = localStorage.getItem('ibrowser_theme');
+            if (cachedTheme === 'light' || cachedTheme === 'dark') {
+                document.documentElement.dataset.theme = cachedTheme;
+            }
+        } catch (e) {}
+    </script>
     <!-- Styles -->
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/theme.css">
     <link rel="stylesheet" href="styles/loading.css">
     <link rel="stylesheet" href="styles/header.css">
     <link rel="stylesheet" href="styles/tabs.css">
     <link rel="stylesheet" href="styles/ai-button.css">
+    <link rel="stylesheet" href="styles/ai-panel.css">
+    <link rel="stylesheet" href="styles/settings.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Arabic Fonts -->
@@ -24,6 +37,7 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
+            <img src="assets/logo/worksuite-logo.png" alt="iBrowser" class="loading-logo">
             <div class="loading-text">جاري التحميل...</div>
             <div class="loading-progress">
                 <div class="progress-bar"></div>
@@ -73,6 +87,10 @@
             <input type="text" id="url-input" class="url-input" placeholder="ابحث أو أدخل عنوان الموقع" spellcheck="false">
             <button type="button" id="go-button" class="go-button" title="انتقال"><i class="fas fa-arrow-left"></i></button>
         </div>
+        <div class="plugin-toolbar" id="plugin-toolbar" title="أدوات الإضافات"></div>
+        <button type="button" id="ai-panel-toggle" class="ai-panel-toggle" title="لوحة الذكاء الاصطناعي الجانبية" aria-expanded="false" aria-controls="ai-panel">
+            <i class="fas fa-robot"></i>
+        </button>
         <div class="ai-button-container">
             <button type="button" id="ai-button" class="ai-button" title="الذكاء الاصطناعي">
                 <span class="ai-label">AI</span>
@@ -89,18 +107,18 @@
                             <span class="ai-desc">روبوت محادثة ذكي من OpenAI</span>
                         </div>
                     </div>
-                    <div class="ai-item" data-url="https://bard.google.com/">
+                    <div class="ai-item" data-url="https://gemini.google.com/">
                         <div class="ai-color-indicator" style="background-color: #4285f4;"></div>
                         <div class="ai-info">
                             <span class="ai-name">Google Gemini</span>
                             <span class="ai-desc">مساعد ذكاء اصطناعي من Google</span>
                         </div>
                     </div>
-                    <div class="ai-item" data-url="https://www.bing.com/chat">
+                    <div class="ai-item" data-url="https://copilot.microsoft.com/">
                         <div class="ai-color-indicator" style="background-color: #00897b;"></div>
                         <div class="ai-info">
-                            <span class="ai-name">Bing AI</span>
-                            <span class="ai-desc">محرك بحث ذكي من Microsoft</span>
+                            <span class="ai-name">Copilot</span>
+                            <span class="ai-desc">مساعد ذكاء اصطناعي من Microsoft</span>
                         </div>
                     </div>
                     <div class="ai-item" data-url="https://claude.ai/">
@@ -110,13 +128,6 @@
                             <span class="ai-desc">مساعد ذكاء اصطناعي من Anthropic</span>
                         </div>
                     </div>
-                    <div class="ai-item" data-url="https://poe.com/">
-                        <div class="ai-color-indicator" style="background-color: #ff5722;"></div>
-                        <div class="ai-info">
-                            <span class="ai-name">Poe</span>
-                            <span class="ai-desc">منصة تجمع عدة نماذج ذكاء اصطناعي</span>
-                        </div>
-                    </div>
                     <div class="ai-item" data-url="https://www.perplexity.ai/">
                         <div class="ai-color-indicator" style="background-color: #3f51b5;"></div>
                         <div class="ai-info">
@@ -124,14 +135,50 @@
                             <span class="ai-desc">محرك بحث مدعوم بالذكاء الاصطناعي</span>
                         </div>
                     </div>
+                    <div class="ai-item" data-url="https://chat.deepseek.com/">
+                        <div class="ai-color-indicator" style="background-color: #4f6df5;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">DeepSeek</span>
+                            <span class="ai-desc">نموذج ذكاء اصطناعي مفتوح المصدر</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://grok.com/">
+                        <div class="ai-color-indicator" style="background-color: #64748b;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Grok</span>
+                            <span class="ai-desc">مساعد ذكاء اصطناعي من xAI</span>
+                        </div>
+                    </div>
+                    <div class="ai-item" data-url="https://poe.com/">
+                        <div class="ai-color-indicator" style="background-color: #ff5722;"></div>
+                        <div class="ai-info">
+                            <span class="ai-name">Poe</span>
+                            <span class="ai-desc">منصة تجمع عدة نماذج ذكاء اصطناعي</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <button type="button" id="settings-button" class="settings-button" title="الإعدادات">
+            <i class="fas fa-sliders-h"></i>
+        </button>
         <div class="menu-button-container">
             <button type="button" id="menu-button" class="menu-button" title="القائمة">
                 <i class="fas fa-ellipsis-v"></i>
             </button>
             <div class="menu-dropdown" id="menu-dropdown">
+                <!-- الإعدادات والإضافات -->
+                <div class="menu-section">
+                    <div class="menu-item" id="open-settings-menu">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>الإعدادات</span>
+                    </div>
+                    <div class="menu-item" id="open-extensions-menu">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <span>الإضافات</span>
+                    </div>
+                </div>
+
                 <!-- قائمة الملف -->
                 <div class="menu-section">
                     <div class="menu-section-title">الملف</div>
@@ -213,10 +260,6 @@
                         <i class="fas fa-trash-alt"></i>
                         <span>مسح كل البيانات</span>
                     </div>
-                    <div class="menu-item" id="check-speed-menu">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>فحص سرعة الإنترنت</span>
-                    </div>
                 </div>
 
                 <!-- قائمة مساعدة -->
@@ -243,13 +286,31 @@
         </div>
     </div>
 
-    <!-- Main Content - Tabs and Webviews -->
-    <div class="tabs-content">
-        <div class="tab-pane active" id="tab-1">
-            <div class="webview-container">
-                <webview id="webview-1" src="https://www.google.com/" partition="persist:pmswebview" allowpopups preload="./webview-preload.js"></webview>
+    <!-- Main Content - Tabs, Webviews and the AI side panel -->
+    <div class="workspace">
+        <div class="tabs-content">
+            <div class="tab-pane active" id="tab-1">
+                <div class="webview-container">
+                    <webview id="webview-1" src="https://www.google.com/" partition="persist:pmswebview" allowpopups preload="./webview-preload.js"></webview>
+                </div>
             </div>
         </div>
+
+        <!-- AI side panel: chat with multiple AI providers alongside the page you're browsing -->
+        <aside class="ai-panel" id="ai-panel" aria-hidden="true">
+            <div class="ai-panel-header">
+                <div class="ai-panel-tabs" id="ai-panel-tabs"></div>
+                <div class="ai-panel-actions">
+                    <button type="button" id="ai-panel-copy-selection" class="ai-panel-action" title="نسخ التحديد الحالي من الصفحة لاستخدامه مع الذكاء الاصطناعي">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button type="button" id="ai-panel-close" class="ai-panel-action" title="إغلاق اللوحة">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="ai-panel-body" id="ai-panel-body"></div>
+        </aside>
     </div>
 
     <!-- Payment Methods Modal -->
@@ -374,14 +435,6 @@
 
     <!-- Status Bar -->
     <div class="status-bar">
-        <div class="status-item" title="سرعة التحميل">
-            <i class="fas fa-download"></i>
-            <span id="download-speed">0 KB/s</span>
-        </div>
-        <div class="status-item" title="سرعة الرفع">
-            <i class="fas fa-upload"></i>
-            <span id="upload-speed">0 KB/s</span>
-        </div>
         <div class="status-item" title="حالة الاتصال">
             <i class="fas fa-wifi"></i>
             <span id="connection-status">متصل</span>
@@ -403,7 +456,153 @@
         </div>
     </div>
 
+    <!-- Settings Overlay -->
+    <div class="settings-overlay" id="settings-overlay">
+        <div class="settings-panel">
+            <div class="settings-sidebar">
+                <div class="settings-brand">
+                    <img src="assets/logo/worksuite-logo.png" alt="iBrowser">
+                    <span>الإعدادات</span>
+                </div>
+                <nav class="settings-nav">
+                    <button type="button" class="settings-nav-item active" data-section="general">
+                        <i class="fas fa-sliders-h"></i> عام
+                    </button>
+                    <button type="button" class="settings-nav-item" data-section="appearance">
+                        <i class="fas fa-palette"></i> المظهر
+                    </button>
+                    <button type="button" class="settings-nav-item" data-section="privacy">
+                        <i class="fas fa-shield-alt"></i> الخصوصية
+                    </button>
+                    <button type="button" class="settings-nav-item" data-section="ai">
+                        <i class="fas fa-robot"></i> الذكاء الاصطناعي
+                    </button>
+                    <button type="button" class="settings-nav-item" data-section="extensions">
+                        <i class="fas fa-puzzle-piece"></i> الإضافات
+                    </button>
+                    <button type="button" class="settings-nav-item" data-section="about">
+                        <i class="fas fa-info-circle"></i> حول iBrowser
+                    </button>
+                </nav>
+            </div>
+
+            <div class="settings-content">
+                <button type="button" class="settings-close" id="settings-close" title="إغلاق"><i class="fas fa-times"></i></button>
+
+                <section class="settings-section active" id="settings-section-general">
+                    <h2>عام</h2>
+                    <div class="settings-field">
+                        <label for="setting-homepage">الصفحة الرئيسية</label>
+                        <input type="text" id="setting-homepage" class="settings-input" placeholder="https://www.google.com/">
+                    </div>
+                    <div class="settings-field">
+                        <label for="setting-search-engine">محرك البحث الافتراضي</label>
+                        <select id="setting-search-engine" class="settings-input"></select>
+                    </div>
+                </section>
+
+                <section class="settings-section" id="settings-section-appearance">
+                    <h2>المظهر</h2>
+                    <div class="settings-field">
+                        <label>السمة</label>
+                        <div class="settings-theme-options">
+                            <button type="button" class="theme-option" data-theme-value="dark">
+                                <i class="fas fa-moon"></i> داكن
+                            </button>
+                            <button type="button" class="theme-option" data-theme-value="light">
+                                <i class="fas fa-sun"></i> فاتح
+                            </button>
+                            <button type="button" class="theme-option" data-theme-value="system">
+                                <i class="fas fa-desktop"></i> حسب النظام
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="settings-section" id="settings-section-privacy">
+                    <h2>الخصوصية</h2>
+                    <div class="settings-field settings-field-row">
+                        <div>
+                            <label for="setting-do-not-track">إرسال إشارة "عدم التتبع" (Do Not Track)</label>
+                        </div>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="setting-do-not-track">
+                            <label for="setting-do-not-track"></label>
+                        </div>
+                    </div>
+                    <div class="settings-field settings-field-row">
+                        <div>
+                            <label for="setting-data-saver">وضع توفير البيانات</label>
+                        </div>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="setting-data-saver">
+                            <label for="setting-data-saver"></label>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label>بيانات التصفح</label>
+                        <div class="settings-button-row">
+                            <button type="button" class="secondary-button" id="settings-clear-cache"><i class="fas fa-eraser"></i> مسح الكاش</button>
+                            <button type="button" class="secondary-button" id="settings-clear-cookies"><i class="fas fa-cookie-bite"></i> مسح الكوكيز</button>
+                            <button type="button" class="secondary-button danger" id="settings-clear-all"><i class="fas fa-trash-alt"></i> مسح كل البيانات</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="settings-section" id="settings-section-ai">
+                    <h2>الذكاء الاصطناعي</h2>
+                    <p class="settings-hint">اختر مزودي الذكاء الاصطناعي الظاهرين في اللوحة الجانبية، وحدد المزود الافتراضي.</p>
+                    <div class="settings-field">
+                        <label for="setting-ai-default">المزود الافتراضي</label>
+                        <select id="setting-ai-default" class="settings-input"></select>
+                    </div>
+                    <div class="settings-field">
+                        <label>المزودون المفعّلون</label>
+                        <div class="ai-provider-list" id="ai-provider-settings-list"></div>
+                    </div>
+                </section>
+
+                <section class="settings-section" id="settings-section-extensions">
+                    <h2>الإضافات (الموديولات)</h2>
+                    <p class="settings-hint">
+                        iBrowser مفتوح المصدر ويدعم الإضافات الخارجية. أضف مجلد إضافة يحتوي على
+                        <code>plugin.json</code> إلى مجلد الإضافات، ثم فعّلها من هنا.
+                    </p>
+                    <div class="settings-button-row">
+                        <button type="button" class="secondary-button" id="settings-open-plugins-folder">
+                            <i class="fas fa-folder-open"></i> فتح مجلد الإضافات
+                        </button>
+                        <button type="button" class="secondary-button" id="settings-refresh-plugins">
+                            <i class="fas fa-sync-alt"></i> تحديث القائمة
+                        </button>
+                    </div>
+                    <div class="extensions-list" id="extensions-list"></div>
+                </section>
+
+                <section class="settings-section" id="settings-section-about">
+                    <h2>حول iBrowser</h2>
+                    <div class="about-inline">
+                        <img src="assets/logo/worksuite-logo.png" alt="iBrowser">
+                        <div>
+                            <h3>iBrowser</h3>
+                            <p>الإصدار <span id="settings-version">2.0.0</span> · مفتوح المصدر</p>
+                            <p class="settings-hint">متصفح سطح المكتب المتكامل من شركة إديبي.</p>
+                        </div>
+                    </div>
+                    <div class="settings-button-row">
+                        <button type="button" class="secondary-button" id="settings-open-website"><i class="fas fa-globe"></i> idiibi.com</button>
+                        <button type="button" class="secondary-button" id="settings-open-github"><i class="fab fa-github"></i> الكود المصدري</button>
+                        <button type="button" class="secondary-button" id="settings-check-updates"><i class="fas fa-sync-alt"></i> التحقق من التحديثات</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
+    <script src="plugin-api.js"></script>
+    <script src="ui-ai-panel.js"></script>
+    <script src="ui-settings.js"></script>
     <script src="renderer.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.min.js"></script>

@@ -12,6 +12,17 @@ const tabsContent = document.querySelector('.tabs-content');
 const paymentModal = document.getElementById('payment-modal');
 const closePaymentModal = document.getElementById('close-payment-modal');
 
+// Search engine template used by the address bar for plain-text queries.
+// Updated from the settings store at startup and whenever the user changes it.
+let searchEngineTemplate = 'https://www.google.com/search?q=%s';
+function applySearchEngineTemplate(template) {
+    if (template) searchEngineTemplate = template;
+}
+window.applySearchEngineTemplate = applySearchEngineTemplate;
+
+// Whether data saver mode is currently active (mirrors the settings store).
+let dataSaverEnabled = false;
+
 // URLs
 const urls = {
     home: 'https://www.google.com/',
@@ -161,10 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showNotification(message);
     });
 
-    window.api.receive('check-internet-speed', () => {
-        checkInternetSpeed();
-    });
-
     // Set up browser controls
     setupBrowserControls();
 
@@ -193,13 +200,52 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    // Initialize network info
-    updateNetworkInfo();
-    setInterval(updateNetworkInfo, 5000);
+    // Initialize connection status
+    updateConnectionStatus();
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
 
-    // Initialize data saver mode
+    // Initialize data saver mode, homepage and search engine from the settings store
     initDataSaverMode();
+    applySettingsDefaults();
+
+    // Initialize v2.0.0 features: AI side panel, integrated settings, plugins
+    if (typeof initAIPanel === 'function') initAIPanel();
+    if (typeof initSettingsUI === 'function') initSettingsUI();
+    if (window.IBrowserPlugins && typeof window.IBrowserPlugins.loadEnabled === 'function') {
+        window.IBrowserPlugins.loadEnabled();
+    }
 });
+
+// Apply the persisted homepage and search engine on startup
+async function applySettingsDefaults() {
+    try {
+        const [homepage, searchEngineKey, engines] = await Promise.all([
+            window.ibrowser.settings.get('homepage', urls.home),
+            window.ibrowser.settings.get('searchEngine', 'google'),
+            window.ibrowser.settings.searchEngines()
+        ]);
+
+        if (homepage) urls.home = homepage;
+        if (engines && engines[searchEngineKey]) {
+            applySearchEngineTemplate(engines[searchEngineKey].url);
+        }
+
+        // Only redirect the initial tab if the user set a custom homepage
+        // and the tab hasn't navigated away from the built-in default yet.
+        const initialWebview = document.getElementById('webview-1');
+        if (initialWebview && homepage && homepage !== 'https://www.google.com/') {
+            initialWebview.addEventListener('dom-ready', function redirectOnce() {
+                if (initialWebview.getURL().startsWith('https://www.google.com/')) {
+                    initialWebview.src = homepage;
+                }
+                initialWebview.removeEventListener('dom-ready', redirectOnce);
+            }, { once: true });
+        }
+    } catch (err) {
+        console.error('Failed to apply saved settings:', err);
+    }
+}
 
 // Set up address bar
 function setupAddressBar() {
@@ -236,8 +282,8 @@ function setupAddressBar() {
 
         // Check if it's a search query or URL
         if (!url.includes('.') || url.includes(' ')) {
-            // It's a search query
-            url = `https://www.google.com/search?q=${encodeURIComponent(url)}`;
+            // It's a search query - use the configured default search engine
+            url = searchEngineTemplate.replace('%s', encodeURIComponent(url));
         } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
             // Add https:// if missing
             url = `https://${url}`;
@@ -333,7 +379,7 @@ function setupWebviewEventListeners(webview) {
         }
 
         // Apply data saver mode if enabled
-        if (localStorage.getItem('data_saver_mode') === 'enabled') {
+        if (dataSaverEnabled) {
             applyDataSaverMode(webview);
         }
     });
@@ -353,9 +399,14 @@ function setupWebviewEventListeners(webview) {
         addToHistory(title, url);
     });
 
-    webview.addEventListener('did-navigate', () => {
+    webview.addEventListener('did-navigate', (e) => {
         updateNavigationState();
         updateCurrentUrl();
+
+        const activeTab = tabs.find(tab => tab.id === activeTabId);
+        if (activeTab && activeTab.webviewId === webview.id) {
+            document.dispatchEvent(new CustomEvent('ibrowser:navigate', { detail: { url: e.url } }));
+        }
     });
 
     webview.addEventListener('did-navigate-in-page', () => {
@@ -661,15 +712,6 @@ function navigateActiveTab(url) {
 
     // Update the tab title based on the URL
     updateTabTitle(activeTabId, getPageTitleFromUrl(url));
-
-    // Close mobile menu if open
-    if (mainNav.classList.contains('active')) {
-        mobileToggle.classList.remove('active');
-        mainNav.classList.remove('active');
-    }
-
-    // Update active link
-    updateActiveLink(url);
 }
 
 // Get the active webview
@@ -710,29 +752,6 @@ function getPageTitleFromUrl(url) {
         return 'الدعم عن بعد';
     } else {
         return 'تبويب جديد';
-    }
-}
-
-// Update the active link in the navigation
-function updateActiveLink(url) {
-    // Remove active class from all links
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-
-    // Add active class to the appropriate link
-    if (url.includes('pms.idiibi.com')) {
-        pmsLink.classList.add('active');
-    } else if (url.includes('services.html')) {
-        servicesLink.classList.add('active');
-    } else if (url.includes('about.html')) {
-        aboutLink.classList.add('active');
-    } else if (url.includes('projects.html')) {
-        projectsLink.classList.add('active');
-    } else if (url.includes('contact.html')) {
-        contactLink.classList.add('active');
-    } else if (url.includes('anydesk-support.html')) {
-        supportLink.classList.add('active');
     }
 }
 
@@ -1656,98 +1675,22 @@ function getHijriMonthName(month) {
     return hijriMonths[monthIndex];
 }
 
-// Update network information
-async function updateNetworkInfo() {
-    try {
-        const downloadSpeed = document.getElementById('download-speed');
-        const uploadSpeed = document.getElementById('upload-speed');
-        const connectionStatus = document.getElementById('connection-status');
-        const downloadIcon = document.querySelector('.status-item i.fa-download');
-        const uploadIcon = document.querySelector('.status-item i.fa-upload');
-        const wifiIcon = document.querySelector('.status-item i.fa-wifi');
+// Reflect real OS-level connectivity in the status bar (navigator.onLine).
+// No simulated bandwidth numbers - Electron has no reliable cross-platform
+// speed API without native modules, so we only report what we can verify.
+function updateConnectionStatus() {
+    const connectionStatus = document.getElementById('connection-status');
+    const wifiIcon = document.querySelector('.status-item i.fa-wifi');
+    if (!connectionStatus) return;
 
-        // Get network info from main process
-        const networkInfo = await window.api.invoke('get-network-info');
+    const isOnline = navigator.onLine;
+    connectionStatus.textContent = isOnline ? 'متصل' : 'غير متصل';
+    connectionStatus.style.color = isOnline ? '#4caf50' : '#f44336';
 
-        // Update UI with animation
-        if (networkInfo.isOnline) {
-            // Add animation class
-            downloadSpeed.classList.add('value-update');
-            uploadSpeed.classList.add('value-update');
-
-            // Update values
-            downloadSpeed.textContent = `${networkInfo.downloadSpeed} Mbps`;
-            uploadSpeed.textContent = `${networkInfo.uploadSpeed} Mbps`;
-            connectionStatus.textContent = 'متصل';
-            connectionStatus.style.color = '#4caf50';
-
-            // Update icons based on speed
-            if (networkInfo.downloadSpeed > 10) {
-                downloadIcon.style.color = '#4caf50'; // Fast
-            } else if (networkInfo.downloadSpeed > 5) {
-                downloadIcon.style.color = '#ff9800'; // Medium
-            } else {
-                downloadIcon.style.color = '#f44336'; // Slow
-            }
-
-            if (networkInfo.uploadSpeed > 5) {
-                uploadIcon.style.color = '#4caf50'; // Fast
-            } else if (networkInfo.uploadSpeed > 2) {
-                uploadIcon.style.color = '#ff9800'; // Medium
-            } else {
-                uploadIcon.style.color = '#f44336'; // Slow
-            }
-
-            // Update WiFi icon
-            wifiIcon.className = 'fas fa-wifi';
-            wifiIcon.style.color = '#4caf50';
-        } else {
-            downloadSpeed.textContent = '0 Mbps';
-            uploadSpeed.textContent = '0 Mbps';
-            connectionStatus.textContent = 'غير متصل';
-            connectionStatus.style.color = '#f44336';
-
-            // Update icons
-            downloadIcon.style.color = '#f44336';
-            uploadIcon.style.color = '#f44336';
-
-            // Change WiFi icon to disconnected
-            wifiIcon.className = 'fas fa-wifi-slash';
-            wifiIcon.style.color = '#f44336';
-        }
-
-        // Remove animation class after animation completes
-        setTimeout(() => {
-            downloadSpeed.classList.remove('value-update');
-            uploadSpeed.classList.remove('value-update');
-        }, 500);
-    } catch (error) {
-        console.error('Error updating network info:', error);
-
-        // Show error in status bar
-        const connectionStatus = document.getElementById('connection-status');
-        connectionStatus.textContent = 'خطأ في الاتصال';
-        connectionStatus.style.color = '#f44336';
+    if (wifiIcon) {
+        wifiIcon.className = isOnline ? 'fas fa-wifi' : 'fas fa-wifi-slash';
+        wifiIcon.style.color = isOnline ? '#4caf50' : '#f44336';
     }
-}
-
-// Check internet speed
-function checkInternetSpeed() {
-    // Show notification that speed test is starting
-    showNotification('جاري فحص سرعة الإنترنت...');
-
-    // In a real app, you would implement a proper speed test
-    // For now, we'll just simulate it
-    setTimeout(() => {
-        const downloadSpeed = Math.floor(Math.random() * 100) + 10;
-        const uploadSpeed = Math.floor(Math.random() * 20) + 5;
-
-        showNotification(`نتيجة الفحص: التحميل ${downloadSpeed} Mbps، الرفع ${uploadSpeed} Mbps`);
-
-        // Update the status bar
-        document.getElementById('download-speed').textContent = `${downloadSpeed} Mbps`;
-        document.getElementById('upload-speed').textContent = `${uploadSpeed} Mbps`;
-    }, 2000);
 }
 
 // Show notification
@@ -1895,44 +1838,29 @@ function applyDataSaverMode(webview) {
     console.log('Data saver mode applied to webview');
 }
 
-// Toggle data saver mode
-function toggleDataSaverMode() {
-    const currentMode = localStorage.getItem('data_saver_mode');
+// Toggle data saver mode. Persisted through the settings store so it's
+// shared between the menu checkbox and the Settings > Privacy toggle.
+async function setDataSaverMode(enabled) {
+    dataSaverEnabled = enabled;
+    await window.ibrowser.settings.set('dataSaverMode', enabled);
+    showNotification(enabled ? 'تم تفعيل وضع توفير البيانات' : 'تم إيقاف وضع توفير البيانات');
 
-    if (currentMode === 'enabled') {
-        localStorage.setItem('data_saver_mode', 'disabled');
-        showNotification('تم إيقاف وضع توفير البيانات');
+    const menuCheckbox = document.getElementById('data-saver-checkbox');
+    if (menuCheckbox) menuCheckbox.checked = enabled;
 
-        // تحديث حالة الزر في القائمة العلوية
-        updateDataSaverMenuState(false);
-    } else {
-        localStorage.setItem('data_saver_mode', 'enabled');
-        showNotification('تم تفعيل وضع توفير البيانات');
+    const settingsCheckbox = document.getElementById('setting-data-saver');
+    if (settingsCheckbox) settingsCheckbox.checked = enabled;
 
-        // Apply to current webview
-        const activeWebview = getActiveWebview();
-        if (activeWebview) {
+    const activeWebview = getActiveWebview();
+    if (activeWebview) {
+        if (enabled) {
             applyDataSaverMode(activeWebview);
+        } else {
+            activeWebview.reload();
         }
-
-        // تحديث حالة الزر في القائمة العلوية
-        updateDataSaverMenuState(true);
     }
 }
-
-// تحديث حالة زر وضع توفير البيانات في القائمة العلوية
-function updateDataSaverMenuState(enabled) {
-    // تحديث حالة الزر في القائمة المنسدلة
-    const dataSaverCheckbox = document.getElementById('data-saver-checkbox');
-    if (dataSaverCheckbox) {
-        dataSaverCheckbox.checked = enabled;
-    }
-
-    // إرسال رسالة إلى العملية الرئيسية لتحديث حالة القائمة العلوية
-    if (window.api && window.api.send) {
-        window.api.send('update-data-saver-menu', enabled);
-    }
-}
+window.setDataSaverMode = setDataSaverMode;
 
 // Set up menu
 function setupMenu() {
@@ -1966,7 +1894,6 @@ function setupMenu() {
     const clearCacheMenu = document.getElementById('clear-cache-menu');
     const clearCookiesMenu = document.getElementById('clear-cookies-menu');
     const clearAllDataMenu = document.getElementById('clear-all-data-menu');
-    const checkSpeedMenu = document.getElementById('check-speed-menu');
 
     // Toggle menu dropdown
     menuButton.addEventListener('click', () => {
@@ -1980,11 +1907,13 @@ function setupMenu() {
         }
     });
 
-    // Data saver toggle
-    if (dataSaverToggle) {
-        dataSaverToggle.addEventListener('click', () => {
-            toggleDataSaverMode();
-            dataSaverCheckbox.checked = localStorage.getItem('data_saver_mode') === 'enabled';
+    // Data saver toggle - clicking anywhere on the row toggles the checkbox,
+    // which itself owns the actual setDataSaverMode() call via its 'change' listener.
+    if (dataSaverToggle && dataSaverCheckbox) {
+        dataSaverToggle.addEventListener('click', (e) => {
+            if (e.target === dataSaverCheckbox || e.target.closest('.toggle-switch')) return;
+            dataSaverCheckbox.checked = !dataSaverCheckbox.checked;
+            dataSaverCheckbox.dispatchEvent(new Event('change'));
         });
     }
 
@@ -2146,12 +2075,6 @@ function setupMenu() {
         });
     }
 
-    if (checkSpeedMenu) {
-        checkSpeedMenu.addEventListener('click', () => {
-            checkInternetSpeed();
-            menuDropdown.classList.remove('show');
-        });
-    }
 }
 
 // Open a page in a new window
@@ -2160,50 +2083,20 @@ function openPage(page) {
     window.api.send('open-page', { page });
 }
 
-// Initialize data saver mode
-function initDataSaverMode() {
+// Initialize data saver mode from the settings store and wire the menu checkbox.
+async function initDataSaverMode() {
+    dataSaverEnabled = await window.ibrowser.settings.get('dataSaverMode', false);
+
     const dataSaverCheckbox = document.getElementById('data-saver-checkbox');
+    if (dataSaverCheckbox) {
+        dataSaverCheckbox.checked = dataSaverEnabled;
+        dataSaverCheckbox.addEventListener('change', () => {
+            setDataSaverMode(dataSaverCheckbox.checked);
+        });
+    }
 
-    if (!dataSaverCheckbox) return;
-
-    // Set initial state
-    const isEnabled = localStorage.getItem('data_saver_mode') === 'enabled';
-    dataSaverCheckbox.checked = isEnabled;
-
-    // تحديث حالة القائمة العلوية
-    updateDataSaverMenuState(isEnabled);
-
-    // Add event listener
-    dataSaverCheckbox.addEventListener('change', () => {
-        if (dataSaverCheckbox.checked) {
-            localStorage.setItem('data_saver_mode', 'enabled');
-            showNotification('تم تفعيل وضع توفير البيانات');
-
-            // Apply to current webview
-            const activeWebview = getActiveWebview();
-            if (activeWebview) {
-                applyDataSaverMode(activeWebview);
-            }
-
-            // تحديث حالة القائمة العلوية
-            updateDataSaverMenuState(true);
-        } else {
-            localStorage.setItem('data_saver_mode', 'disabled');
-            showNotification('تم إيقاف وضع توفير البيانات');
-
-            // Reload current webview to disable data saver
-            const activeWebview = getActiveWebview();
-            if (activeWebview) {
-                activeWebview.reload();
-            }
-
-            // تحديث حالة القائمة العلوية
-            updateDataSaverMenuState(false);
-        }
-    });
-
-    // إضافة وظيفة toggleDataSaverMode إلى النافذة لاستخدامها من العملية الرئيسية
-    window.toggleDataSaverMode = toggleDataSaverMode;
+    const settingsCheckbox = document.getElementById('setting-data-saver');
+    if (settingsCheckbox) settingsCheckbox.checked = dataSaverEnabled;
 }
 
 // Set up AI button and dropdown
